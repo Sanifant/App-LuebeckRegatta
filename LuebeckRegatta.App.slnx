@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="LuebeckRegatta.App.Tests/LuebeckRegatta.App.Tests.csproj" />
+  <Project Path="LuebeckRegatta.App/LuebeckRegatta.App.csproj" />
+</Solution>
