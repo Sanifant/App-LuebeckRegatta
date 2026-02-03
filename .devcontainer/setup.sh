@@ -5,11 +5,7 @@ echo "🚀 Setting up .NET MAUI Development Environment..."
 
 # Install MAUI workload
 echo "📦 Installing .NET MAUI workload..."
-dotnet workload install maui --skip-sign-check
-
-# Install Android workload for Android builds
-echo "📱 Installing Android workload..."
-dotnet workload install android --skip-sign-check
+dotnet workload install maui-android
 
 # Restore project dependencies
 echo "🔄 Restoring project dependencies..."
