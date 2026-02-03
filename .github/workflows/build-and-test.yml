@@ -14,10 +14,10 @@ jobs:
     
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '10.0.x'
         
@@ -46,10 +46,10 @@ jobs:
     
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '10.0.x'
         
@@ -71,36 +71,36 @@ jobs:
           **/bin/Release/**/*.msix
         retention-days: 7
 
-  build-ios:
-    name: Build iOS
-    runs-on: macos-latest
-    
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '10.0.x'
-        
-    - name: Install .NET MAUI Workload
-      run: dotnet workload install maui
-      
-    - name: Restore Dependencies
-      run: dotnet restore
-      
-    - name: Build iOS
-      run: dotnet build -f net10.0-ios -c Release /p:BuildIpa=True
-      
-    - name: Upload iOS Artifacts
-      uses: actions/upload-artifact@v4
-      if: success()
-      with:
-        name: ios-build
-        path: |
-          **/*.ipa
-        retention-days: 7
+#  build-ios:
+#    name: Build iOS
+#    runs-on: macos-latest
+#    
+#    steps:
+#    - name: Checkout Code
+#      uses: actions/checkout@v6
+#      
+#    - name: Setup .NET
+#      uses: actions/setup-dotnet@v5
+#      with:
+#        dotnet-version: '10.0.x'
+#       
+#    - name: Install .NET MAUI Workload
+#      run: dotnet workload install maui
+#      
+#    - name: Restore Dependencies
+#      run: dotnet restore
+#      
+#    - name: Build iOS
+#      run: dotnet build -f net10.0-ios -c Release /p:BuildIpa=True
+#      
+#    - name: Upload iOS Artifacts
+#      uses: actions/upload-artifact@v4
+#      if: success()
+#      with:
+#        name: ios-build
+#        path: |
+#          **/*.ipa
+#        retention-days: 7
 
   test:
     name: Run Tests
@@ -109,10 +109,10 @@ jobs:
     
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '10.0.x'
         
@@ -137,3 +137,36 @@ jobs:
         name: Test Results
         path: '**/*.trx'
         reporter: dotnet-trx
+
+  publish-google-play:
+    name: Publish to Google Play Store
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Download Android Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: android-build
+        path: ./artifacts
+        
+    - name: Find AAB File
+      id: find-aab
+      run: |
+        AAB_FILE=$(find ./artifacts -name "*.aab" -type f | head -n 1)
+        echo "aab_path=$AAB_FILE" >> $GITHUB_OUTPUT
+        echo "Found AAB: $AAB_FILE"
+        
+    - name: Upload to Google Play Store
+      uses: r0adkll/upload-google-play@v1
+      with:
+        serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+        packageName: com.sanifant.luebeckregatta
+        releaseFiles: ${{ steps.find-aab.outputs.aab_path }}
+        track: internal
+        status: completed
+        inAppUpdatePriority: 2
