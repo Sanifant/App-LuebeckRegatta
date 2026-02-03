@@ -1,4 +1,6 @@
-﻿namespace LuebeckRegatta.App.Tests;
+﻿using Xunit;
+
+namespace LuebeckRegatta.App.Tests;
 
 public class UnitTest1
 {
