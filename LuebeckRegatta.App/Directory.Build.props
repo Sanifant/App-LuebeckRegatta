@@ -1,0 +1,12 @@
+<Project>
+    <PropertyGroup>
+        <AndroidSigningKeyPass>1qayXDR%</AndroidSigningKeyPass>
+        <AndroidSigningStorePass>1qayXDR%</AndroidSigningStorePass>
+    </PropertyGroup>
+    <ItemGroup>
+        <AndroidKeyStoreFiles Remove="**/*.keystore" />
+    </ItemGroup>
+    <ItemGroup>
+        <AndroidKeyStoreFiles Include="my-release-key.keystore" />
+    </ItemGroup>
+</Project>
