@@ -27,7 +27,12 @@ jobs:
           dotnet nuget locals all --clear
         
     - name: Install .NET MAUI Workload
-      run: dotnet workload install maui
+      run: |
+        dotnet workload install android
+        dotnet workload install maui-android
+        dotnet workload install maui-ios
+        dotnet workload install maui-maccatalyst
+        dotnet workload install maui-tizen
       
     - name: Restore Dependencies
       run: dotnet restore --no-cache
@@ -64,7 +69,12 @@ jobs:
           dotnet nuget locals all --clear
         
     - name: Install .NET MAUI Workload
-      run: dotnet workload install maui
+      run: |
+        dotnet workload install android
+        dotnet workload install maui-android
+        dotnet workload install maui-ios
+        dotnet workload install maui-maccatalyst
+        dotnet workload install maui-tizen
       
     - name: Restore Dependencies
       run: dotnet restore --no-cache
@@ -98,7 +108,12 @@ jobs:
 #      run: dotnet nuget locals all --clear
 #       
 #    - name: Install .NET MAUI Workload
-#      run: dotnet workload install maui
+#      run: |
+#        dotnet workload install android
+#        dotnet workload install maui-android
+#        dotnet workload install maui-ios
+#        dotnet workload install maui-maccatalyst
+#        dotnet workload install maui-tizen
 #      
 #    - name: Restore Dependencies
 #      run: dotnet restore --no-cache
