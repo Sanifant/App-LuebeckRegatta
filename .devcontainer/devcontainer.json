@@ -1,0 +1,50 @@
+{
+  "name": "Lübeck Regatta App - .NET MAUI",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:1-10.0-bookworm",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  },
+
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "formulahendry.dotnet-test-explorer",
+        "kreativ-software.csharpextensions",
+        "jchannon.csharpextensions",
+        "adrianwilczynski.namespace",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "github.vscode-pull-request-github",
+        "eamodio.gitlens",
+        "editorconfig.editorconfig"
+      ],
+      "settings": {
+        "dotnet.defaultSolution": "LuebeckRegatta.App.slnx",
+        "omnisharp.enableEditorConfigSupport": true,
+        "omnisharp.enableRoslynAnalyzers": true,
+        "files.exclude": {
+          "**/bin": true,
+          "**/obj": true
+        },
+        "search.exclude": {
+          "**/bin": true,
+          "**/obj": true
+        }
+      }
+    }
+  },
+
+  "forwardPorts": [5000, 5001, 8080],
+
+  "remoteUser": "vscode"
+}
