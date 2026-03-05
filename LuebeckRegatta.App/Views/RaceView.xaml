@@ -1,12 +1,160 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:LuebeckRegatta.App.ViewModels"
+             xmlns:models="clr-namespace:LuebeckRegatta.App.Models"
+             xmlns:converters="clr-namespace:LuebeckRegatta.App.Converters"
              x:Class="LuebeckRegatta.App.Views.RaceView"
-             Title="RaceView">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="{Binding EventTitle}"
+             x:DataType="viewmodel:RaceViewModel">
+
+    <ContentPage.Resources>
+        <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
+        <converters:IsNotNullOrEmptyConverter x:Key="IsNotNullOrEmptyConverter"/>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="*">
+        
+        <!-- Loading Indicator -->
+        <ActivityIndicator IsRunning="{Binding IsLoading}"
+                          IsVisible="{Binding IsLoading}"
+                          Color="{StaticResource Primary}"
+                          VerticalOptions="Center"
+                          HorizontalOptions="Center"
+                          Grid.Row="0"/>
+
+        <!-- Race Heats List -->
+        <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}"
+                     Grid.Row="0">
+            <CollectionView ItemsSource="{Binding RaceHeats}"
+                           SelectionMode="None"
+                           Margin="10">
+                
+                <CollectionView.EmptyView>
+                    <StackLayout Padding="20"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center">
+                        <Label Text="Keine Rennen verfügbar"
+                              FontSize="18"
+                              TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                              HorizontalTextAlignment="Center"/>
+                        <Label Text="Bitte wählen Sie ein Event in den Einstellungen aus oder ziehen Sie nach unten um zu aktualisieren."
+                              FontSize="14"
+                              TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                              HorizontalTextAlignment="Center"
+                              Margin="0,10,0,0"/>
+                    </StackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:RaceHeatModel">
+                        <Border StrokeThickness="1"
+                               Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                               Background="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                               Padding="15"
+                               Margin="0,5"
+                               StrokeShape="RoundRectangle 10">
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" 
+                                  ColumnDefinitions="Auto,*,Auto">
+                                
+                                <!-- Race Number -->
+                                <Border BackgroundColor="{StaticResource Primary}"
+                                       Padding="10,5"
+                                       StrokeShape="RoundRectangle 5"
+                                       Grid.Row="0"
+                                       Grid.Column="0"
+                                       Margin="0,0,10,0">
+                                    <Label Text="{Binding RaceNumber, StringFormat='#{0}'}"
+                                          FontSize="18"
+                                          FontAttributes="Bold"
+                                          TextColor="White"/>
+                                </Border>
+
+                                <!-- Title -->
+                                <Label Text="{Binding Title}"
+                                      FontSize="18"
+                                      FontAttributes="Bold"
+                                      VerticalOptions="Center"
+                                      Grid.Row="0"
+                                      Grid.Column="1"/>
+
+                                <!-- Status Badge -->
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                                       Padding="8,4"
+                                       StrokeShape="RoundRectangle 5"
+                                       Grid.Row="0"
+                                       Grid.Column="2"
+                                       Margin="10,0,0,0">
+                                    <Label Text="{Binding Status}"
+                                          FontSize="12"
+                                          TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray100}}"/>
+                                </Border>
+
+                                <!-- Planned Start Date -->
+                                <HorizontalStackLayout Spacing="5"
+                                                      Grid.Row="1"
+                                                      Grid.Column="0"
+                                                      Grid.ColumnSpan="3"
+                                                      Margin="0,10,0,0">
+                                    <Label Text="⏰"
+                                          FontSize="14"/>
+                                    <Label Text="Geplant:"
+                                          FontSize="14"
+                                          TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"/>
+                                    <Label Text="{Binding PlannedStartDate, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                                          FontSize="14"
+                                          FontAttributes="Bold"/>
+                                </HorizontalStackLayout>
+
+                                <!-- Actual Start Date (if available) -->
+                                <HorizontalStackLayout Spacing="5"
+                                                      Grid.Row="2"
+                                                      Grid.Column="0"
+                                                      Grid.ColumnSpan="3"
+                                                      Margin="0,5,0,0"
+                                                      IsVisible="{Binding ActualStartDate, Converter={StaticResource IsNotNullConverter}}">
+                                    <Label Text="🏁"
+                                          FontSize="14"/>
+                                    <Label Text="Gestartet:"
+                                          FontSize="14"
+                                          TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"/>
+                                    <Label Text="{Binding ActualStartDate, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                                          FontSize="14"
+                                          FontAttributes="Bold"
+                                          TextColor="{StaticResource Primary}"/>
+                                </HorizontalStackLayout>
+
+                                <!-- Comment (if available) -->
+                                <Label Text="{Binding Comment}"
+                                      FontSize="12"
+                                      TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                                      Grid.Row="3"
+                                      Grid.Column="0"
+                                      Grid.ColumnSpan="3"
+                                      Margin="0,10,0,0"
+                                      IsVisible="{Binding Comment, Converter={StaticResource IsNotNullOrEmptyConverter}}"/>
+
+                                <!-- Entries Count -->
+                                <Border BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
+                                       Padding="10"
+                                       StrokeShape="RoundRectangle 5"
+                                       Grid.Row="4"
+                                       Grid.Column="0"
+                                       Grid.ColumnSpan="3"
+                                       Margin="0,10,0,0"
+                                       IsVisible="{Binding Entries, Converter={StaticResource IsNotNullConverter}}">
+                                    <Label Text="{Binding Entries.Count, StringFormat='👥 {0} Teilnehmer'}"
+                                          FontSize="12"
+                                          TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}"/>
+                                </Border>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+
 </ContentPage>

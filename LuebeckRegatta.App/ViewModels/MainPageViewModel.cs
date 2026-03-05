@@ -1,5 +1,6 @@
 ﻿using LuebeckRegatta.App.Models;
 using LuebeckRegatta.App.Repositories;
+using LuebeckRegatta.App.Services;
 using LuebeckRegatta.App.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -43,7 +44,8 @@ namespace LuebeckRegatta.App.ViewModels
 
         public MainPageViewModel()
         {
-            _newsRepository = new NewsRepository();
+            var settingsService = new SettingsService();
+            _newsRepository = new NewsRepository(settingsService);
             RefreshCommand = new Command(async () => await RefreshAsync());
             ItemTappedCommand = new Command<NewsItem>(async (item) => await NavigateToDetail(item));
             

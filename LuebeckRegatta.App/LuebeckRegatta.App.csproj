@@ -70,7 +70,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include=".github\workflows\build-and-test.yml" />
+	  <AndroidResource Remove=".github\**" />
+	  <Compile Remove=".github\**" />
+	  <EmbeddedResource Remove=".github\**" />
+	  <MauiCss Remove=".github\**" />
+	  <MauiXaml Remove=".github\**" />
+	  <None Remove=".github\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -92,6 +97,9 @@
 	  </MauiXaml>
 	  <MauiXaml Update="Views\RaceView.xaml">
 		<Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SettingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
 

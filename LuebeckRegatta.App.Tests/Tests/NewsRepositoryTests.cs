@@ -1,4 +1,5 @@
 using LuebeckRegatta.App.Repositories;
+using LuebeckRegatta.App.Services;
 using LuebeckRegatta.App.Models;
 using Xunit;
 
@@ -15,8 +16,11 @@ public class NewsRepositoryTests
     [Fact]
     public void NewsRepository_CanBeInstantiated()
     {
-        // Arrange & Act
-        var repository = new NewsRepository();
+        // Arrange
+        var settingsService = new SettingsService();
+        
+        // Act
+        var repository = new NewsRepository(settingsService);
 
         // Assert
         Assert.NotNull(repository);

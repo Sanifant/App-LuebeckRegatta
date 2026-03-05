@@ -1,23 +1,26 @@
 using System.Xml.Linq;
 using LuebeckRegatta.App.Models;
+using LuebeckRegatta.App.Services;
 
 namespace LuebeckRegatta.App.Repositories;
 
 public class NewsRepository : INewsRepository
 {
     private readonly HttpClient _httpClient;
-    private const string FeedUrl = "https://www.rudern.de/news.xml";
+    private readonly ISettingsService _settingsService;
 
-    public NewsRepository()
+    public NewsRepository(ISettingsService settingsService)
     {
         _httpClient = new HttpClient();
+        _settingsService = settingsService;
     }
 
     public async Task<NewsFeed?> GetNewsFeedAsync(CancellationToken cancellationToken = default)
     {
         try
         {
-            var response = await _httpClient.GetStringAsync(FeedUrl, cancellationToken);
+            var feedUrl = _settingsService.NewsFeedUrl;
+            var response = await _httpClient.GetStringAsync(feedUrl, cancellationToken);
             var doc = XDocument.Parse(response);
             var channel = doc.Root?.Element("channel");
 

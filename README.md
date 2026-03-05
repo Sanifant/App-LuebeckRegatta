@@ -8,6 +8,12 @@
 - 📰 News Feed von rudern.de
 - 🔄 Pull-to-Refresh
 - 📱 Android & iOS Support
+- 📦 Regatta Authentifizierung
+   - 📝 Zugangsdaten für die Regattasoftware
+   - 👤 Benutzername
+   - [Eingabefeld]
+   - 🔒 Passwort
+   - [••••••••] (maskiert)
 
 ## Build Status
 Die App wird automatisch bei jedem Push getestet und gebaut.

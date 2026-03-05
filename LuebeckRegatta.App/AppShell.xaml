@@ -30,6 +30,10 @@
             ContentTemplate="{DataTemplate views:RaceView}"
             Route="RaceView" />
 
+        <ShellContent
+            Title="Einstellungen"
+            ContentTemplate="{DataTemplate views:SettingsPage}"
+            Route="SettingsPage" />
 
     </FlyoutItem>
 

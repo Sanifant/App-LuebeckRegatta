@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:LuebeckRegatta.App.ViewModels"
+             xmlns:converters="clr-namespace:LuebeckRegatta.App.Converters"
+             x:Class="LuebeckRegatta.App.Views.SettingsPage"
+             Title="Einstellungen"
+             x:DataType="viewmodel:SettingsViewModel">
+
+    <ContentPage.Resources>
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            
+            <!-- Header -->
+            <Label Text="Einstellungen"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="0,10,0,20"/>
+
+            <!-- News Feed Section -->
+            <Border StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    Background="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    Padding="15"
+                    StrokeShape="RoundRectangle 10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="News Feed URL"
+                           FontSize="18"
+                           FontAttributes="Bold"/>
+                    <Label Text="RSS Feed URL für Rudernachrichten"
+                           FontSize="12"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"/>
+                    <Entry Text="{Binding NewsFeedUrl}"
+                           Placeholder="https://www.rudern.de/news.xml"
+                           Keyboard="Url"
+                           ClearButtonVisibility="WhileEditing"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Regatta API Section -->
+            <Border StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    Background="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    Padding="15"
+                    StrokeShape="RoundRectangle 10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Regatta API URL"
+                           FontSize="18"
+                           FontAttributes="Bold"/>
+                    <Label Text="Basis-URL für die Regattasoftware API"
+                           FontSize="12"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"/>
+                    <Entry Text="{Binding RegattaApiUrl}"
+                           Placeholder="https://frgle/api"
+                           Keyboard="Url"
+                           ClearButtonVisibility="WhileEditing"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Regatta Authentication Section -->
+            <Border StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    Background="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    Padding="15"
+                    StrokeShape="RoundRectangle 10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Regatta Authentifizierung"
+                           FontSize="18"
+                           FontAttributes="Bold"/>
+                    <Label Text="Zugangsdaten für die Regattasoftware"
+                           FontSize="12"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"/>
+                    
+                    <Label Text="Benutzername"
+                           FontSize="14"
+                           Margin="0,10,0,0"/>
+                    <Entry Text="{Binding RegattaUsername}"
+                           Placeholder="Benutzername"
+                           ClearButtonVisibility="WhileEditing"/>
+                    
+                    <Label Text="Passwort"
+                           FontSize="14"
+                           Margin="0,10,0,0"/>
+                    <Entry Text="{Binding RegattaPassword}"
+                           Placeholder="Passwort"
+                           IsPassword="True"
+                           ClearButtonVisibility="WhileEditing"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Event Selection Section -->
+            <Border StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    Background="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                    Padding="15"
+                    StrokeShape="RoundRectangle 10">
+                <VerticalStackLayout Spacing="10">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="Event Auswahl"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Start"/>
+                        <Button Text="↻"
+                                Command="{Binding LoadEventsCommand}"
+                                FontSize="16"
+                                Padding="10,5"
+                                WidthRequest="40"
+                                HeightRequest="35"
+                                HorizontalOptions="End"
+                                VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <Label Text="Wählen Sie das aktive Event aus"
+                           FontSize="12"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"/>
+                    
+                    <ActivityIndicator IsRunning="{Binding IsLoadingEvents}"
+                                       IsVisible="{Binding IsLoadingEvents}"
+                                       Color="{StaticResource Primary}"
+                                       HeightRequest="30"/>
+                    
+                    <Picker ItemsSource="{Binding Events}"
+                            SelectedItem="{Binding SelectedEvent}"
+                            ItemDisplayBinding="{Binding Title}"
+                            Title="Event auswählen"
+                            IsEnabled="{Binding IsLoadingEvents, Converter={StaticResource InvertedBoolConverter}}"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Info Box -->
+            <Border StrokeThickness="1"
+                    Stroke="{StaticResource Primary}"
+                    Background="{AppThemeBinding Light=#F0F9FF, Dark=#1E3A5F}"
+                    Padding="15"
+                    StrokeShape="RoundRectangle 10">
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="ℹ️"
+                           FontSize="20"
+                           VerticalOptions="Start"/>
+                    <Label FontSize="12"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray100}}"
+                           VerticalOptions="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Hinweis: " FontAttributes="Bold"/>
+                                <Span Text="Die Einstellungen werden sofort nach dem Speichern übernommen. Änderungen an der API-URL oder den Zugangsdaten erfordern möglicherweise ein erneutes Laden der Daten."/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- Buttons -->
+            <Grid ColumnDefinitions="*,*" 
+                  ColumnSpacing="10"
+                  Margin="0,20,0,0">
+                
+                <Button Text="Speichern"
+                        Command="{Binding SaveCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White"
+                        Grid.Column="0"
+                        HeightRequest="50"/>
+
+                <Button Text="Zurücksetzen"
+                        Command="{Binding ResetCommand}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray100}}"
+                        Grid.Column="1"
+                        HeightRequest="50"/>
+            </Grid>
+
+            <!-- Default Values Info -->
+            <Border StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    Background="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
+                    Padding="15"
+                    StrokeShape="RoundRectangle 10"
+                    Margin="0,20,0,0">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Standardwerte"
+                           FontSize="14"
+                           FontAttributes="Bold"/>
+                    <Label FontSize="11"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="News Feed: " FontAttributes="Bold"/>
+                                <Span Text="https://www.rudern.de/news.xml"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label FontSize="11"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Regatta API: " FontAttributes="Bold"/>
+                                <Span Text="https://frgle/api"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
