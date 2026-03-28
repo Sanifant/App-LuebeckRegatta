@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework Condition="!$([MSBuild]::IsOSPlatform('osx'))">net10.0</TargetFramework>
+        <TargetFramework Condition="$([MSBuild]::IsOSPlatform('osx'))">net10.0-ios</TargetFramework>
+        <SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
+        <Nullable>enable</Nullable>
+        <RootNamespace>AvaloniaApplication1.iOS</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia.iOS"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\de.openelp.regatta\de.openelp.regatta.csproj" />
+    </ItemGroup>
+</Project>

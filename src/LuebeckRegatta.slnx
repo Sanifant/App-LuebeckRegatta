@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Projektmappenelemente/">
+    <File Path="../.github/workflows/build-and-test.yml" />
+    <File Path="../README.md" />
+  </Folder>
+  <Project Path="Android\Android.csproj">
+    <Deploy />
+  </Project>
+  <Project Path="de.openelp.regatta\de.openelp.regatta.csproj" />
+  <Project Path="de.openelp.regatta.Tests\de.openelp.regatta.Tests.csproj" />
+  <Project Path="Desktop\Desktop.csproj" />
+  <Project Path="IOS\IOS.csproj">
+    <Build Solution="Debug|*" Project="false" />
+    <Deploy Solution="Release|*" />
+  </Project>
+</Solution>
