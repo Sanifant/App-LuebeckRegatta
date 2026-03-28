@@ -1,8 +1,0 @@
-<Solution>
-  <Folder Name="/Projektmappenelemente/">
-    <File Path=".github/workflows/build-and-test.yml" />
-    <File Path="README.md" />
-  </Folder>
-  <Project Path="LuebeckRegatta.App.Tests/LuebeckRegatta.App.Tests.csproj" />
-  <Project Path="LuebeckRegatta.App/LuebeckRegatta.App.csproj" />
-</Solution>

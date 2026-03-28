@@ -8,129 +8,44 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-android:
-    name: Build Android
-    runs-on: ubuntu-latest
-    
+  build-desktop:
+    name: Build Desktop (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v6
-      
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '10.0.x'
-        
-    - name: Install .NET MAUI Workload
-      run: |
-        dotnet workload install android
-        dotnet workload install maui-android
-      
+
     - name: Clear NuGet Caches
-      run: |
-          dotnet clean
-          dotnet nuget locals all --clear
-      
-    - name: Restore Dependencies
-      run: dotnet restore --no-cache
+      run: dotnet nuget locals all --clear
 
-    - name: Build Android
-      run: dotnet build LuebeckRegatta.App/LuebeckRegatta.App.csproj -f net10.0-android -c Release /p:AndroidPackageFormat=aab
+    - name: Restore Desktop Project
+      run: dotnet restore src/Desktop/Desktop.csproj --no-cache
 
-    - name: Upload Android Artifacts
+    - name: Build Desktop Project
+      run: dotnet build src/Desktop/Desktop.csproj -c Release --no-restore
+
+    - name: Upload Desktop Artifacts
       uses: actions/upload-artifact@v4
       if: success()
       with:
-        name: android-build
-        path: |
-          **/*.apk
-          **/*.aab
+        name: desktop-build-${{ matrix.os }}
+        path: src/Desktop/bin/Release/net10.0/**
         retention-days: 7
 
-  build-windows:
-    name: Build Windows
-    runs-on: windows-latest
-    
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v6
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v5
-      with:
-        dotnet-version: '10.0.x'
-     
-    - name: Clear NuGet Caches
-      run: |
-          dotnet clean
-          dotnet nuget locals all --clear
-        
-    - name: Install .NET MAUI Workload
-      run: |
-        dotnet workload install android
-        dotnet workload install maui-android
-        dotnet workload install maui-ios
-        dotnet workload install maui-maccatalyst
-        dotnet workload install maui-tizen
-      
-    - name: Restore Dependencies
-      run: dotnet restore --no-cache
-      
-#    - name: Build Windows
-#      run: dotnet build -f net10.0-windows10.0.19041.0 -c Release
-#      
-#    - name: Upload Windows Artifacts
-#      uses: actions/upload-artifact@v4
-#      if: success()
-#      with:
-#        name: windows-build#
-#        path: |
-#          **/bin/Release/**/*.msix
-#        retention-days: 7
-
-#  build-ios:
-#    name: Build iOS
-#    runs-on: macos-latest
-#    
-#    steps:
-#    - name: Checkout Code
-#      uses: actions/checkout@v6
-#      
-#    - name: Setup .NET
-#      uses: actions/setup-dotnet@v5
-#      with:
-#        dotnet-version: '10.0.x'
-#      
-#    - name: Clear NuGet Caches
-#      run: dotnet nuget locals all --clear
-#       
-#    - name: Install .NET MAUI Workload
-#      run: |
-#        dotnet workload install android
-#        dotnet workload install maui-android
-#        dotnet workload install maui-ios
-#        dotnet workload install maui-maccatalyst
-#        dotnet workload install maui-tizen
-#      
-#    - name: Restore Dependencies
-#      run: dotnet restore --no-cache
-#      
-#    - name: Build iOS
-#      run: dotnet build -f net10.0-ios -c Release /p:BuildIpa=True
-#      
-#    - name: Upload iOS Artifacts
-#      uses: actions/upload-artifact@v4
-#      if: success()
-#      with:
-#        name: ios-build
-#        path: |
-#          **/*.ipa
-#        retention-days: 7
-
   test:
-    name: Run Tests
-    runs-on: windows-latest
-    needs: [build-android, build-windows]
+    name: Run xUnit Tests
+    runs-on: ubuntu-latest
+    needs: [build-desktop]
 
     steps:
     - name: Checkout Code
@@ -141,21 +56,12 @@ jobs:
       with:
         dotnet-version: '10.0.x'
 
-    - name: Install .NET MAUI Workload
-      run: |
-        dotnet workload install android
-        dotnet workload install maui-android
+    - name: Restore Test Project
+      run: dotnet restore src/de.openelp.regatta.Tests/de.openelp.regatta.Tests.csproj --no-cache
 
-    - name: Restore Dependencies
-      run: |
-          dotnet clean
-          dotnet nuget locals all --clear
-          dotnet restore --no-cache
+    - name: Run xUnit Tests
+      run: dotnet test src/de.openelp.regatta.Tests/de.openelp.regatta.Tests.csproj -c Release --no-restore --logger trx
 
-    - name: Run Unit Tests
-      run: dotnet test LuebeckRegatta.App.Tests/LuebeckRegatta.App.Tests.csproj --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --logger trx
-      continue-on-error: true
-      
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
       if: always()
@@ -163,44 +69,3 @@ jobs:
         name: test-results
         path: '**/TestResults/**'
         retention-days: 7
-        
-    - name: Publish Test Results
-      uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: Test Results
-        path: '**/*.trx'
-        reporter: dotnet-trx
-
-  publish-google-play:
-    name: Publish to Google Play Store
-    runs-on: ubuntu-latest
-    needs: [test]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v6
-      
-    - name: Download Android Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: android-build
-        path: ./artifacts
-        
-    - name: Find AAB File
-      id: find-aab
-      run: |
-        AAB_FILE=$(find ./artifacts -name "*.aab" -type f | head -n 1)
-        echo "aab_path=$AAB_FILE" >> $GITHUB_OUTPUT
-        echo "Found AAB: $AAB_FILE"
-        
-    - name: Upload to Google Play Store
-      uses: r0adkll/upload-google-play@v1
-      with:
-        serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-        packageName: com.sanifant.luebeckregatta
-        releaseFiles: ${{ steps.find-aab.outputs.aab_path }}
-        track: internal
-        status: completed
-        inAppUpdatePriority: 2
