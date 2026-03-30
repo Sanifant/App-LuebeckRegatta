@@ -23,7 +23,8 @@
         "GitHub.copilot-chat",
         "github.vscode-pull-request-github",
         "eamodio.gitlens",
-        "editorconfig.editorconfig"
+        "editorconfig.editorconfig",
+        "AvaloniaTeam.vscode-avalonia"
       ],
       "settings": {
         "dotnet.defaultSolution": "LuebeckRegatta.App.slnx",

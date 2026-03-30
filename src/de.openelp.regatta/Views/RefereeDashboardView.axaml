@@ -1,0 +1,219 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:de.openelp.regatta.ViewModels"
+    mc:Ignorable="d"
+     d:DesignWidth="1280" d:DesignHeight="800"
+    x:Class="de.openelp.regatta.Views.RefereeDashboardView"
+    MinWidth="1280" MinHeight="800"
+    x:DataType="vm:RefereeDashboardViewModel">
+
+  <UserControl.Styles>
+    <!-- Minimaler LCARS-Look: kräftige Farben, runde Segmente, hohe Kontraste -->
+    <Style Selector="UserControl">
+      <Setter Property="Background" Value="#FF000000"/>
+    </Style>
+
+    <Style Selector="TextBlock.lcars-title">
+      <Setter Property="FontSize" Value="26"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Foreground" Value="#FFFFCC66"/>
+    </Style>
+
+    <Style Selector="TextBlock.lcars-label">
+      <Setter Property="FontSize" Value="16"/>
+      <Setter Property="Foreground" Value="#FFBBD7FF"/>
+    </Style>
+
+    <Style Selector="Border.lcars-panel">
+      <Setter Property="CornerRadius" Value="18"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Padding" Value="14"/>
+    </Style>
+
+    <Style Selector="Button.lcars-button">
+      <Setter Property="CornerRadius" Value="16"/>
+      <Setter Property="Padding" Value="14,10"/>
+      <Setter Property="FontSize" Value="16"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Background" Value="#FFCC66FF"/>
+      <Setter Property="Foreground" Value="Black"/>
+    </Style>
+
+    <Style Selector="Button.lcars-danger">
+      <Setter Property="Background" Value="#FFFF6666"/>
+      <Setter Property="Foreground" Value="Black"/>
+    </Style>
+
+    <Style Selector="Button.lcars-warn">
+      <Setter Property="Background" Value="#FFFFCC66"/>
+      <Setter Property="Foreground" Value="Black"/>
+    </Style>
+
+    <Style Selector="ComboBox.lcars">
+      <Setter Property="FontSize" Value="16"/>
+      <Setter Property="Background" Value="#FF222222"/>
+      <Setter Property="Foreground" Value="#FFEEEEEE"/>
+    </Style>
+
+    <Style Selector="TextBox.lcars, TextBox.lcars TextPresenter">
+      <Setter Property="FontSize" Value="16"/>
+      <Setter Property="Background" Value="#FF111111"/>
+      <Setter Property="Foreground" Value="#FFEEEEEE"/>
+      <Setter Property="CaretBrush" Value="#FFFFCC66"/>
+    </Style>
+  </UserControl.Styles>
+
+  <Grid ColumnDefinitions="240, *" RowDefinitions="Auto, *">
+    <!-- Top Bar -->
+    <Border Grid.ColumnSpan="2" Classes="lcars-panel" Background="#FF331155" Margin="14,14,14,10">
+      <DockPanel LastChildFill="True">
+        <TextBlock DockPanel.Dock="Left" Classes="lcars-title" Text="LÜBECK REGATTA • SCHIEDSRICHTER-ANSICHT" />
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+          <TextBlock Classes="lcars-label" Text="Wettkampfrichter:" VerticalAlignment="Center"/>
+          <ComboBox Classes="lcars"
+                    Width="260"
+                    ItemsSource="{Binding Referees}"
+                    SelectedItem="{Binding SelectedReferee}"
+                    DisplayMemberBinding="{Binding DisplayName}"/>
+          <Button Classes="lcars-button" Command="{Binding RefreshCommand}" Content="Aktualisieren"/>
+        </StackPanel>
+      </DockPanel>
+    </Border>
+
+    <!-- LCARS Sidebar -->
+    <StackPanel Grid.Row="1" Grid.Column="0" Margin="14,0,10,14" Spacing="10">
+      <Border Classes="lcars-panel" Background="#FF6633CC">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="lcars-title" Text="AKTIVE RENNEN"/>
+          <TextBlock Classes="lcars-label" Text="Nur Status: Running"/>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="lcars-panel" Background="#FF222222">
+        <StackPanel Spacing="10">
+          <Button Classes="lcars-button" Command="{Binding TakeOverCommand}" Content="Rennen begleiten"/>
+          <Button Classes="lcars-button lcars-warn" Command="{Binding CreateGlobalWarningCommand}" Content="Verwarnung (Auswahl)"/>
+          <Button Classes="lcars-button" Command="{Binding SaveNoteCommand}" Content="Notiz speichern"/>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="lcars-panel" Background="#FF114466">
+        <StackPanel Spacing="6">
+          <TextBlock Classes="lcars-title" Text="STATUS"/>
+          <TextBlock Classes="lcars-label" Text="{Binding StatusText}"/>
+          <TextBlock Classes="lcars-label" Text="{Binding ClockText}"/>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+
+    <!-- Main Content -->
+    <Grid Grid.Row="1" Grid.Column="1" Margin="0,0,14,14" RowDefinitions="Auto, Auto, *" ColumnDefinitions="*">
+      <!-- Race List (ersetzt Vaadin Grid) -->
+      <Border Classes="lcars-panel" Background="#FF1A1A1A" Margin="0,0,0,10">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="lcars-title" Text="Rennenliste"/>
+          <DataGrid ItemsSource="{Binding Heats}"
+                    SelectedItem="{Binding SelectedHeat}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True"
+                    Height="240">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Rennnr." Binding="{Binding RaceNumber}" Width="120"/>
+              <DataGridTextColumn Header="Rennen" Binding="{Binding Title}" Width="*"/>
+              <DataGridTextColumn Header="Gestartet" Binding="{Binding ActualStartDate}" Width="170"/>
+              <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="120"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </StackPanel>
+      </Border>
+
+      <!-- Selected Heat Header -->
+      <Border Classes="lcars-panel" Background="#FF331155" Margin="0,0,0,10">
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Left">
+            <TextBlock Classes="lcars-title" Text="{Binding SelectedHeatTitle}"/>
+            <TextBlock Classes="lcars-label" Text="{Binding SelectedHeatMeta}"/>
+          </StackPanel>
+          <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+            <Button Classes="lcars-button" Command="{Binding PrevHeatCommand}" Content="◄"/>
+            <Button Classes="lcars-button" Command="{Binding NextHeatCommand}" Content="►"/>
+          </StackPanel>
+        </DockPanel>
+      </Border>
+
+      <!-- Boats/Tiles area + note (entspricht ItemDetailsRenderer + commentTa) -->
+      <Grid RowDefinitions="*, Auto" ColumnDefinitions="*" >
+        <Border Grid.Row="0" Classes="lcars-panel" Background="#FF111111">
+          <ItemsControl ItemsSource="{Binding SelectedHeatEntries}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <!-- Kacheln nebeneinander, wie heatDetailHL in RefereeView.java -->
+                <WrapPanel Orientation="Horizontal" ItemWidth="390" ItemHeight="210" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <!-- Boat Tile -->
+                <Border Classes="lcars-panel"
+                        Background="{Binding WarningColor}"
+                        Margin="8">
+                  <Grid RowDefinitions="Auto,Auto,*,Auto" ColumnDefinitions="Auto,*" ColumnSpacing="10" RowSpacing="6">
+
+                    <Border Grid.RowSpan="4" Grid.Column="0" Width="56" Height="56"
+                            CornerRadius="28"
+                            Background="#FFCC66FF"
+                            VerticalAlignment="Top">
+                      <TextBlock Text="{Binding Lane}"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 FontSize="22"
+                                 FontWeight="Bold"
+                                 Foreground="Black"/>
+                    </Border>
+
+                    <TextBlock Grid.Column="1" Grid.Row="0"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="#FFEEEEEE"
+                               Text="{Binding ShortTeamName}"/>
+                    <TextBlock Grid.Column="1" Grid.Row="1"
+                               Classes="lcars-label"
+                               Text="{Binding TeamName}"/>
+
+                    <TextBlock Grid.Column="1" Grid.Row="2"
+                               TextWrapping="Wrap"
+                               Foreground="#FFBBD7FF"
+                               Text="{Binding AthletesText}"/>
+
+                    <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" Spacing="10">
+                      <Button Classes="lcars-button lcars-warn"
+                              Command="{Binding DataContext.CreateWarningForEntryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                              CommandParameter="{Binding .}"
+                              Content="Verwarnung"/>
+                      <TextBlock Classes="lcars-label" Text="{Binding Status}" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </Border>
+
+        <Border Grid.Row="1" Classes="lcars-panel" Background="#FF1A1A1A" Margin="0,10,0,0">
+          <StackPanel Spacing="8">
+            <TextBlock Classes="lcars-title" Text="Bemerkung"/>
+            <TextBox Classes="lcars"
+                     AcceptsReturn="True"
+                     Height="90"
+                     Text="{Binding NoteText}"/>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Grid>
+  </Grid>
+</UserControl>

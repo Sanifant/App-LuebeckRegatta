@@ -1,5 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:de.openelp.regatta.ViewModels"
+             xmlns:views="using:de.openelp.regatta.Views"
              xmlns:local="using:de.openelp.regatta"
              x:Class="de.openelp.regatta.App"
              RequestedThemeVariant="Default">
@@ -7,6 +9,13 @@
 
     <Application.DataTemplates>
         <local:ViewLocator/>
+        <DataTemplate DataType="{x:Type vm:RefereeDashboardViewModel}">
+            <views:RefereeDashboardView/>
+        </DataTemplate>
+<!--    <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+            <views:SettingsView/>
+        </DataTemplate>
+-->
     </Application.DataTemplates>
 
     <Application.Styles>

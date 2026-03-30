@@ -1,70 +1,121 @@
 # Lübeck Regatta App - AI Coding Agent Instructions
 
 ## Project Overview
-Cross-platform .NET MAUI mobile app for rowing news from rudern.de. Targets Android, iOS, Mac Catalyst, and Windows using .NET 10.0.
+Cross-platform Avalonia UI application for regatta management and referee coordination. 
+Targets Android, iOS, Desktop (Windows/Linux), and Mac using .NET 10.0 and integrates with the frgle API for race heat and referee data.
 
 ## Architecture Patterns
 
-### MVVM Without CommunityToolkit.Mvvm Attributes
-- ViewModels use manual `INotifyPropertyChanged` implementation, NOT `[ObservableProperty]` attributes
-- Example: See [MainPageViewModel.cs](../LuebeckRegatta.App/ViewModels/MainPageViewModel.cs) - implements `INotifyPropertyChanged` with explicit property setters calling `OnPropertyChanged()`
-- Commands use `new Command(async () => await Method())` instead of `[RelayCommand]`
-- Despite having `CommunityToolkit.Mvvm` package, the codebase uses traditional MVVM pattern
+### MVVM with CommunityToolkit.Mvvm Attributes
+- ViewModels use `[ObservableProperty]` attributes from CommunityToolkit.Mvvm
+- Example: See [MainViewModel.cs](../src/de.openelp.regatta/ViewModels/MainViewModel.cs) - uses `[ObservableProperty]` for auto-generating properties with `INotifyPropertyChanged`
+- Base class pattern: All ViewModels inherit from `ViewModelBase : ObservableObject`
+- No manual `OnPropertyChanged()` calls needed - handled by source generators
 
-### Dependency Injection Setup
-- Services registered in [MauiProgram.cs](../LuebeckRegatta.App/MauiProgram.cs): repositories as Singleton, ViewModels/Pages as Transient
-- ViewModels initialize repositories directly in constructors: `_newsRepository = new NewsRepository()`
-- Repository interface pattern: `INewsRepository` → `NewsRepository` implementation
+### Dependency Injection & Service Layer
+- Services registered in DI container (likely in App.axaml.cs or Program.cs)
+- Service interface pattern: `IFrgleApiService` → `FrgleApiService` implementation
+- HttpClient injected into services for API communication
+- Services in [Services/](../src/de.openelp.regatta/Services/) folder
 
-### Shell Navigation
-- [AppShell.xaml](../LuebeckRegatta.App/AppShell.xaml) defines flyout menu with custom header/footer controls
-- Navigation uses `await Shell.Current.GoToAsync(nameof(NewsDetailPage), parameters)` with Dictionary parameters
-- Route names match class names (e.g., "MainPage", "NewsDetailPage")
+### Avalonia UI Framework
+- XAML files use `.axaml` extension (Avalonia XAML)
+- MainWindow hosts Views: [MainWindow.axaml](../src/de.openelp.regatta/Views/MainWindow.axaml) → [MainView.axaml](../src/de.openelp.regatta/Views/MainView.axaml)
+- ViewLocator pattern for automatic View-ViewModel binding
+- Fluent theme: `<FluentTheme />` in App.axaml
+- Compiled bindings enabled: `<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>`
+- DataContext binding syntax: `x:DataType="vm:MainViewModel"` for design-time support
 
-### RSS Feed Integration
-- `NewsRepository` fetches XML from `https://www.rudern.de/news.xml` using HttpClient + XDocument parsing
-- HTML stripping: `Regex.Replace(html, "<.*?>", string.Empty)` for clean descriptions
-- Image extraction from description HTML via regex: `src="([^"]+)"`
+### frgle API Integration
+- `FrgleApiService` communicates with frgle API (default base URL: `https://frgle`)
+- API endpoints:
+  - `GET /frgle/api/{eventId}/Referee` - Get all referees
+  - `PUT /frgle/api/0/Referee/{refereeId}/warning/{heatId}` - Add warning
+  - `PUT /frgle/api` - Update race heat (JSON body)
+  - `GET /frgle/api/{eventId}/RaceHeat` - Get race heats
+- Uses `HttpClient.GetFromJsonAsync<T>()` and `PutAsJsonAsync()` for JSON serialization
+- Error handling: Try-catch with `Debug.WriteLine()`, returns null on failures
 
 ## Build & Development
 
 ### Platform-Specific Builds
 ```bash
-# Android (Release with signing)
-dotnet build -f net10.0-android -c Release
+# Desktop (Windows/Linux/Mac)
+dotnet build src/Desktop/Desktop.csproj -c Release
 
-# iOS (with IPA generation)
-dotnet build -f net10.0-ios -c Release /p:BuildIpa=True
+# Android
+dotnet build src/Android/Android.csproj -c Release
 
-# Windows
-dotnet build -f net10.0-windows10.0.19041.0 -c Release
+# iOS (macOS only)
+dotnet build src/IOS/IOS.csproj -c Release
 ```
 
-### Android Release Configuration
-- Uses keystore signing (configured in [LuebeckRegatta.App.csproj](../LuebeckRegatta.App/LuebeckRegatta.App.csproj))
-- Password properties in [Directory.Build.props](../LuebeckRegatta.App/Directory.Build.props)
-- Output format: AAB (`AndroidPackageFormat=aab`)
+### Android Configuration
+- Target framework: `net10.0-android`
+- Minimum Android version: API 21 (Android 5.0)
+- Package format: APK (`<AndroidPackageFormat>apk</AndroidPackageFormat>`)
+- Application ID: `com.CompanyName.AvaloniaApplication1`
+
+### iOS Configuration
+- Target framework: `net10.0-ios` (conditionally on macOS)
+- Minimum iOS version: 13.0
 
 ### Testing
-- xUnit test project: [LuebeckRegatta.App.Tests](../LuebeckRegatta.App.Tests/)
-- Run tests: `dotnet test`
-- Sample integration test in [NewsRepositoryTests.cs](../LuebeckRegatta.App/Tests/NewsRepositoryTests.cs) - tests live RSS feed
+- xUnit test project: [de.openelp.regatta.Tests](../src/de.openelp.regatta.Tests/)
+- Run tests: `dotnet test src/de.openelp.regatta.Tests/de.openelp.regatta.Tests.csproj`
+- Sample test in [MainViewModelTests.cs](../src/de.openelp.regatta.Tests/ViewModels/MainViewModelTests.cs) - tests property changed notifications
 
 ## CI/CD Pipeline
 - GitHub Actions workflow: [build-and-test.yml](../.github/workflows/build-and-test.yml)
-- Multi-platform builds on Windows (Android/Windows) and macOS (iOS)
+- Test job runs on Ubuntu with .NET 10.0
+- Multi-platform builds: Desktop (Ubuntu/Windows), Android (Ubuntu)
+- Release builds triggered on GitHub release creation
 - Artifacts uploaded with 7-day retention
+- Desktop release assets automatically attached to GitHub releases as ZIP files
 
 ## Key Conventions
-1. **No XAML code-behind logic** - ViewModels handle all business logic
-2. **German UI text** - App displays in German (e.g., "Rennen", "Lübeck Regatta")
-3. **ObservableCollection pattern** - Use `NewsItems.Clear()` + `Add()` loop for refresh
-4. **Error handling** - Try-catch with Debug.WriteLine, return null on failures
-5. **Async initialization** - ViewModels call async methods in constructor with `_ = LoadNewsAsync()`
-6. **XML Documentation Comments** - Always add /// documentation comments for classes, methods, and public members
+1. **XML Documentation Comments** - Always add /// documentation comments for classes, methods, and public members
    ```csharp
    /// <summary>
-   /// Loads news items from the RSS feed
+   /// Gets all race heats for an event
    /// </summary>
-   public async Task LoadNewsAsync() { ... }
+   /// <param name="eventId">The event ID</param>
+   public async Task<List<RaceHeatModel>?> GetRaceHeatsAsync(int eventId) { ... }
    ```
+
+2. **Nullable Reference Types** - Enabled project-wide (`<Nullable>enable</Nullable>`)
+   - Use `?` suffix for nullable types (e.g., `string?`, `int?`, `List<T>?`)
+   - Return null from service methods on errors
+
+3. **Models in Models folder** - DTOs/entities in [Models/](../src/de.openelp.regatta/Models/)
+   - Example: `RefereeModel`, `RaceHeatModel`, `HeatEntryModel`
+   - Simple POCOs with nullable properties
+
+4. **German UI text** - App displays in German (e.g., "Lübeck Regatta")
+
+5. **Error handling pattern**:
+   ```csharp
+   try
+   {
+       var response = await _httpClient.GetAsync($"{_baseUrl}/api/endpoint");
+       response.EnsureSuccessStatusCode();
+       return await response.Content.ReadFromJsonAsync<Model>();
+   }
+   catch (Exception ex)
+   {
+       Debug.WriteLine($"Error description: {ex.Message}");
+       return null;
+   }
+   ```
+
+6. **No code-behind logic in Views** - Keep Views simple, all logic in ViewModels
+
+7. **Avalonia-specific patterns**:
+   - Use `UserControl` for reusable views
+   - `Design.DataContext` for design-time previews
+   - Compiled bindings with `x:DataType` for performance
+
+8. **Project structure**:
+   - Core library: `de.openelp.regatta` (shared code)
+   - Platform heads: `Desktop`, `Android`, `IOS` (reference core project)
+   - Tests: `de.openelp.regatta.Tests`

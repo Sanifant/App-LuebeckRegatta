@@ -14,17 +14,17 @@ namespace de.openelp.regatta.Services;
 public class FrgleApiService : IFrgleApiService
 {
     private readonly HttpClient _httpClient;
-    private readonly string _baseUrl;
+    private readonly IAppConfiguration _configuration;
 
     /// <summary>
     /// Initializes a new instance of the FrgleApiService class
     /// </summary>
     /// <param name="httpClient">The HTTP client</param>
-    /// <param name="baseUrl">The base URL of the API (default: https://frgle)</param>
-    public FrgleApiService(HttpClient httpClient, string baseUrl = "https://frgle")
+    /// <param name="configuration">Central app configuration</param>
+    public FrgleApiService(HttpClient httpClient, IAppConfiguration? configuration = null)
     {
         _httpClient = httpClient;
-        _baseUrl = baseUrl.TrimEnd('/');
+        _configuration = configuration ?? AppConfiguration.Current;
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ public class FrgleApiService : IFrgleApiService
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{_baseUrl}/frgle/api/{eventId}/Referee");
+            var response = await _httpClient.GetAsync($"{_configuration.WebApiBaseUrl}/frgle/api/{eventId}/Referee");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<RefereeModel>>();
         }
@@ -53,7 +53,7 @@ public class FrgleApiService : IFrgleApiService
         try
         {
             var response = await _httpClient.PutAsync(
-                $"{_baseUrl}/frgle/api/0/Referee/{refereeId}/warning/{heatId}",
+                $"{_configuration.WebApiBaseUrl}/frgle/api/{_configuration.SelectedEventId}/Referee/{refereeId}/warning/{heatId}",
                 null);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
@@ -72,7 +72,7 @@ public class FrgleApiService : IFrgleApiService
     {
         try
         {
-            var response = await _httpClient.PutAsJsonAsync($"{_baseUrl}/frgle/api", raceHeat);
+            var response = await _httpClient.PutAsJsonAsync($"{_configuration.WebApiBaseUrl}/frgle/api", raceHeat);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
@@ -90,7 +90,7 @@ public class FrgleApiService : IFrgleApiService
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{_baseUrl}/frgle/api/{eventId}/RaceHeat");
+            var response = await _httpClient.GetAsync($"{_configuration.WebApiBaseUrl}/frgle/api/{eventId}/RaceHeat");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<RaceHeatModel>>();
         }
@@ -108,7 +108,7 @@ public class FrgleApiService : IFrgleApiService
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{_baseUrl}/frgle/api/{eventId}/RaceHeat/{raceId}");
+            var response = await _httpClient.GetAsync($"{_configuration.WebApiBaseUrl}/frgle/api/{eventId}/RaceHeat/{raceId}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<RaceHeatModel>();
         }
@@ -127,7 +127,7 @@ public class FrgleApiService : IFrgleApiService
         try
         {
             var response = await _httpClient.PostAsJsonAsync(
-                $"{_baseUrl}/frgle/api/0/RaceHeat/{raceId}/referee",
+                $"{_configuration.WebApiBaseUrl}/frgle/api/{_configuration.SelectedEventId}/RaceHeat/{raceId}/referee",
                 referee);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
@@ -147,7 +147,7 @@ public class FrgleApiService : IFrgleApiService
         try
         {
             var response = await _httpClient.PostAsJsonAsync(
-                $"{_baseUrl}/frgle/api/{eventId}/RaceHeat/{raceId}/stop",
+                $"{_configuration.WebApiBaseUrl}/frgle/api/{eventId}/RaceHeat/{raceId}/stop",
                 raceHeat);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
