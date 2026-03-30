@@ -5,8 +5,9 @@ Diese Codespace-Konfiguration richtet eine vollständige Entwicklungsumgebung f�
 ## Enthaltene Features
 
 - ✅ .NET 10.0 SDK
-- ✅ .NET MAUI Workload
+- ✅ Java 17
 - ✅ Android Workload für Android-Builds
+- ✅ Android SDK Command-line Tools, Platform Tools, API 36 und Build Tools 36.0.0
 - ✅ GitHub CLI
 - ✅ Docker-in-Docker (für Container-basierte Workflows)
 - ✅ Node.js LTS (für zusätzliche Tools)
@@ -60,12 +61,12 @@ dotnet build -f net10.0-android -c Release
 Falls Probleme auftreten, können Sie das Setup manuell ausführen:
 
 ```bash
-# MAUI Workload neu installieren
-dotnet workload install maui --skip-sign-check
+# Android SDK und Workload einrichten
+bash .devcontainer/setup.sh
 
 # Dependencies wiederherstellen
 dotnet restore
 
-# Projekt neu bauen
-dotnet build
+# Android-Projekt neu bauen
+dotnet build src/Android/Android.csproj -c Debug
 ```

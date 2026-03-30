@@ -58,7 +58,7 @@
       <Setter Property="Foreground" Value="#FFEEEEEE"/>
     </Style>
 
-    <Style Selector="TextBox.lcars, TextBox.lcars TextPresenter">
+    <Style Selector="TextBox.lcars">
       <Setter Property="FontSize" Value="16"/>
       <Setter Property="Background" Value="#FF111111"/>
       <Setter Property="Foreground" Value="#FFEEEEEE"/>
@@ -156,7 +156,7 @@
             </ItemsControl.ItemsPanel>
 
             <ItemsControl.ItemTemplate>
-              <DataTemplate>
+              <DataTemplate DataType="vm:HeatEntryTileViewModel">
                 <!-- Boat Tile -->
                 <Border Classes="lcars-panel"
                         Background="{Binding WarningColor}"

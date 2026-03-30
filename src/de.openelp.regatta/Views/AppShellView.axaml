@@ -1,5 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:de.openelp.regatta.ViewModels"
+             x:DataType="vm:AppShellViewModel"
              x:Class="de.openelp.regatta.Views.AppShellView">
 
   <Grid ColumnDefinitions="220,*">

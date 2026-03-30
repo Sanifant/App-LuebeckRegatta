@@ -68,9 +68,16 @@ public partial class RefereeDashboardViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public async Task CreateWarningForEntryCommand()
+    public async Task CreateWarningForEntry(HeatEntryTileViewModel? entry)
     {
-        CancellationToken ct = default;
+        await Task.CompletedTask;
+
+        if (entry == null)
+        {
+            StatusText = "Kein Eintrag ausgewählt.";
+            return;
+        }
+
         if (SelectedReferee == null)
         {
             StatusText = "Bitte einen Wettkampfrichter auswählen!";
@@ -79,8 +86,23 @@ public partial class RefereeDashboardViewModel : ViewModelBase
 
         // Backend-Warnungsservice/Endpoint ist in RaceHeatController nicht enthalten.
         // Daher: UI-Mock-Logik wie in RefereeView.java (farblich eskalieren).
-        //entry.WarningCount += 1;
-        //StatusText = $"Verwarnung gesetzt (Bahn {entry.Lane})";
+        entry.WarningCount += 1;
+        StatusText = $"Verwarnung gesetzt (Bahn {entry.Lane})";
+    }
+
+    [RelayCommand]
+    public void CreateGlobalWarning()
+    {
+        if (SelectedReferee == null)
+        {
+            StatusText = "Bitte einen Wettkampfrichter auswählen!";
+            return;
+        }
+
+        foreach (var entry in SelectedHeatEntries)
+            entry.WarningCount += 1;
+
+        StatusText = "Verwarnung für sichtbare Einträge gesetzt.";
     }
 
     public int EventId
@@ -231,7 +253,7 @@ public partial class RefereeDashboardViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public void PreviousHeat()
+    public void PrevHeat()
     {
         if (SelectedHeat == null) return;
         int currentIndex = Heats.IndexOf(SelectedHeat);

@@ -37,7 +37,7 @@ public partial class AppShellViewModel : ViewModelBase
     }
 
 [RelayCommand]
-    public void NavigateToRefereeDashboardCommand()
+    public void NavigateToRefereeDashboard()
     {
         Current = RefereeDashboard;
     }

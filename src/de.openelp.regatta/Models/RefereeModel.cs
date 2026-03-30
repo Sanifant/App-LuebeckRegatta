@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace de.openelp.regatta.Models;
 
 /// <summary>
@@ -19,4 +21,9 @@ public class RefereeModel
     /// Gets or sets the referee's last name
     /// </summary>
     public string? LastName { get; set; }
+
+    /// <summary>
+    /// Gets the formatted display name shown in selectors
+    /// </summary>
+    public string DisplayName => string.Join(" ", new[] { FirstName, LastName }.Where(s => !string.IsNullOrWhiteSpace(s)));
 }

@@ -27,7 +27,7 @@
         "AvaloniaTeam.vscode-avalonia"
       ],
       "settings": {
-        "dotnet.defaultSolution": "LuebeckRegatta.App.slnx",
+        "dotnet.defaultSolution": "src/LuebeckRegatta.slnx",
         "omnisharp.enableEditorConfigSupport": true,
         "omnisharp.enableRoslynAnalyzers": true,
         "files.exclude": {
