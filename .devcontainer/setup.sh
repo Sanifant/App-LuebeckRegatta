@@ -3,17 +3,37 @@ set -e
 
 echo "🚀 Setting up .NET MAUI Development Environment..."
 
-# Install MAUI workload
-echo "📦 Installing .NET MAUI workload..."
-dotnet workload install maui-android
+# Valid values are only '18.04', '20.04', '22.04', and '24.04'
+# For other versions of Ubuntu, please use the tar.gz package
+ubuntu_release=`lsb_release -rs`
+wget https://packages.microsoft.com/config/ubuntu/${ubuntu_release}/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+
+# Install Java msopenjed-21
+#echo "📦 Installing Java msopenjdk-21..."
+#sudo apt-get update
+#sudo apt-get install -y msopenjdk-21
+
+#echo "📦 Installing Android SDK..."
+#sudo apt-get install -y android-sdk
+#export ANDROID_SDK_ROOT=/usr/lib/android-sdk
+#export ANDROID_HOME=$ANDROID_SDK_ROOT
+#export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
+#export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
+
+# Install Android workload
+echo "📦 Installing android workload..."
+dotnet workload install android
+
+dotnet build src/Android/Android.csproj -t:InstallAndroidDependencies -f net10.0-android -p:AndroidSdkDirectory=/usr/lib/android-sdk -p:JavaSdkDirectory=/usr/lib/jdk -p:AcceptAndroidSdkLicenses=True
 
 # Restore project dependencies
 echo "🔄 Restoring project dependencies..."
-dotnet restore
+dotnet restore src/LuebeckRegatta.slnx
 
 # Build project to verify setup
 echo "🔨 Building project..."
-dotnet build --configuration Debug
+#dotnet build --configuration Debug
 
 echo "✅ Development environment setup complete!"
 echo "💡 You can now build the project with:"
