@@ -21,7 +21,7 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         var collection = new ServiceCollection();
-        collection.AddSingleton<RaceHeatApiClient>();
+        collection.AddSingleton<IRaceHeatApiClient, RaceHeatApiClient>();
         collection.AddTransient<MainViewModel>();
         collection.AddTransient<RefereeDashboardViewModel>();
         collection.AddTransient<SettingsViewModel>();

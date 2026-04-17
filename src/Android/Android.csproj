@@ -7,9 +7,11 @@
         <ApplicationId>de.openelp.regatta</ApplicationId>
         <ApplicationVersion>1</ApplicationVersion>
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-        <AndroidPackageFormat>apk</AndroidPackageFormat>
+        <AndroidPackageFormat>aab</AndroidPackageFormat>
         <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+        <RunAOTCompilation>false</RunAOTCompilation>
         <RootNamespace>de.openelp.regatta.Android</RootNamespace>
+        <PublishTrimmed>false</PublishTrimmed>
     </PropertyGroup>
 
     <ItemGroup>

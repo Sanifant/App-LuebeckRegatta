@@ -3,6 +3,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="de.openelp.regatta.HomeView">
-  Welcome to Avalonia!
+             x:Class="de.openelp.regatta.HomeView"
+              xmlns:vm="using:de.openelp.regatta.ViewModels"
+              x:DataType="vm:HomeViewModel">
+  <StackPanel Margin="20">
+    <TextBlock Text="{Binding WelcomeMessage}" 
+      FontSize="24" 
+      FontWeight="Bold" 
+      Margin="0,0,0,20"/>
+    <TextBlock Text="This is the home page of the app. Here you can find an overview of the latest regatta news and updates." 
+      TextWrapping="Wrap"/>
+  </StackPanel>
 </ContentPage>

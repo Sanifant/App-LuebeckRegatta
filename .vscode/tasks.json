@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Android APK (Release)",
+            "type": "shell",
+            "command": "dotnet build src/Android/Android.csproj -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=${workspaceFolder}/android-upload.keystore -p:AndroidSigningKeyAlias=release -p:AndroidSigningKeyPass=RmRnrOkkfWlzUkO1eiT5xnmqcObUSO -p:AndroidSigningStorePass=RmRnrOkkfWlzUkO1eiT5xnmqcObUSO -p:AndroidSdkDirectory=/workspaces/android-sdk && mkdir -p ${workspaceFolder}/release && cp ${workspaceFolder}/src/Android/bin/Release/net10.0-android/de.openelp.regatta-Signed.apk ${workspaceFolder}/release/",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

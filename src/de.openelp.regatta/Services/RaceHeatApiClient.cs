@@ -9,7 +9,15 @@ using de.openelp.regatta.Models;
 
 namespace de.openelp.regatta.Services;
 
-public class RaceHeatApiClient
+public interface IRaceHeatApiClient
+{
+    Task<RaceHeatModel?> GetHeatDetailsAsync(int eventId, int raceHeatId, CancellationToken ct = default);
+    Task<List<RaceHeatModel>> GetHeatsAsync(int eventId, CancellationToken ct = default);
+    Task SetRefereeAsync(int eventId, int raceHeatId, RefereeModel referee, CancellationToken ct = default);
+    Task StopRaceAsync(int eventId, int raceHeatId, RaceHeatModel heat, CancellationToken ct = default);
+}
+
+public class RaceHeatApiClient : IRaceHeatApiClient
 {
     private readonly HttpClient _http;
     private readonly JsonSerializerOptions _json;

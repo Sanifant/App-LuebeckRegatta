@@ -14,7 +14,7 @@ namespace de.openelp.regatta.ViewModels;
 
 public partial class RefereeDashboardViewModel : ViewModelBase
 {
-    private readonly RaceHeatApiClient _api;
+    private readonly IRaceHeatApiClient _api;
     private readonly IAppConfiguration _configuration;
 
     private Timer _clockTimer;
@@ -26,7 +26,7 @@ public partial class RefereeDashboardViewModel : ViewModelBase
     private string _statusText = "";
     private string _clockText = "";
 
-    public RefereeDashboardViewModel(RaceHeatApiClient api, IAppConfiguration? configuration = null)
+    public RefereeDashboardViewModel(IRaceHeatApiClient api, IAppConfiguration? configuration = null)
     {
         _api = api ?? throw new ArgumentNullException(nameof(api));
         _configuration = configuration ?? AppConfiguration.Current;
