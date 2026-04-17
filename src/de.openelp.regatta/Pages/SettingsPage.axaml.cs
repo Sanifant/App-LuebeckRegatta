@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace de.openelp.regatta;
 
-public partial class SettingsPage : UserControl
+public partial class SettingsPage : ContentPage
 {
     public SettingsPage()
     {
