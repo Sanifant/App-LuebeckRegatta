@@ -6,23 +6,18 @@
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:SettingsViewModel"
 			 x:Class="de.openelp.regatta.SettingsPage">
-	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
-		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-		<vm:SettingsViewModel />
-	</Design.DataContext>
 	<Grid>
-		  <StackPanel Margin="14" Spacing="10">
+		<StackPanel Margin="14" Spacing="10">
 			<TextBlock Text="Einstellungen" FontSize="24" FontWeight="Bold"/>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="100" Text="Sprache:" VerticalAlignment="Center"/>
+				<TextBlock Width="120" Text="Sprache:" VerticalAlignment="Center"/>
 				<ComboBox Width="150" PlaceholderText="auswählen...">
 					<ComboBoxItem Content="Deutsch"/>
 					<ComboBoxItem Content="Englisch"/>
 				</ComboBox>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="100" Text="Design:" VerticalAlignment="Center"/>
+				<TextBlock Width="120" Text="Design:" VerticalAlignment="Center"/>
 				<ComboBox Width="150" PlaceholderText="auswählen..." SelectedItem="{Binding SelectedTheme}">
 					<ComboBoxItem Content="Hell"/>
 					<ComboBoxItem Content="Dunkel"/>
@@ -30,11 +25,11 @@
 				</ComboBox>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="100" Text="Webservice URL:" VerticalAlignment="Center"/>
+				<TextBlock Width="120" Text="Webservice URL:" VerticalAlignment="Center"/>
 				<TextBox Width="150" Text="{Binding WebApiBaseUrl, Mode=TwoWay}" PlaceholderText="Webservice Url" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="100" Text="Event:" VerticalAlignment="Center"/>
+				<TextBlock Width="120" Text="Event:" VerticalAlignment="Center"/>
 				<ComboBox Width="150" PlaceholderText="auswählen..." SelectedItem="{Binding SelectedEventId}">
 					<ComboBoxItem Content="1"/>
 					<ComboBoxItem Content="2"/>
@@ -42,16 +37,16 @@
 				</ComboBox>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="100" Text="Benutzername:" VerticalAlignment="Center"/>
+				<TextBlock Width="120" Text="Benutzername:" VerticalAlignment="Center"/>
 				<TextBox Width="150" Text="{Binding UserName, Mode=TwoWay}" PlaceholderText="Benutzername" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="100" Text="Passwort:" VerticalAlignment="Center"/>
+				<TextBlock Width="120" Text="Passwort:" VerticalAlignment="Center"/>
 				<TextBox Width="150" Text="{Binding Password, Mode=TwoWay}" PlaceholderText="Passwort" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="100" Text="Passwort:" VerticalAlignment="Center"/>
-				<CheckBox Width="150" IsChecked="{Binding Password, Mode=TwoWay}" Content="Passwort" />
+				<TextBlock Width="120" Text="Is Debug:" VerticalAlignment="Center"/>
+				<CheckBox Width="150" IsChecked="{Binding Password, Mode=TwoWay}" />
 			</StackPanel>
 
 			<!-- Weitere Einstellungen hier hinzufügen -->

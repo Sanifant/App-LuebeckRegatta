@@ -13,12 +13,12 @@ using de.openelp.regatta.Services;
 
 namespace de.openelp.regatta.ViewModels;
 
-public partial class RefereeDashboardViewModel : ViewModelBase
+public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
 {
     private readonly IRaceHeatApiClient _api;
     private readonly IAppConfiguration _configuration;
 
-    private Timer _clockTimer;
+    private readonly Timer _clockTimer;
 
     private int _eventId;
     private RefereeModel? _selectedReferee;
@@ -255,5 +255,10 @@ public partial class RefereeDashboardViewModel : ViewModelBase
         {
             SelectedHeat = Heats[currentIndex - 1];
         }
+    }
+
+    public void Dispose()
+    {
+        _clockTimer.Dispose();
     }
 }

@@ -6,13 +6,13 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace de.openelp.regatta.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
     private int _selectedPageIndex;
-    private PageItem? _currentItem;
 
     [ObservableProperty]
     private bool _isDrawerOpened;
@@ -36,10 +36,10 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    private async void NavigateTo(int pageIndex)
+    private Task NavigateTo(int pageIndex)
     {
         if (pageIndex < 0 || pageIndex >= Pages.Count || Navigator is null)
-            return;
+            return Task.CompletedTask;
 
         var item = Pages[pageIndex];
 
@@ -48,10 +48,10 @@ public partial class MainViewModel : ViewModelBase
             var view = item.Factory();
             if (view is Page page && view.GetType() != Navigator.NavigationStack.LastOrDefault()?.GetType())
             {
-                _currentItem = item;
-                await Navigator.ReplaceAsync(page);
+                return Navigator.ReplaceAsync(page);
             }
         }
+        return Task.CompletedTask;
     }
 
     public MainViewModel()
