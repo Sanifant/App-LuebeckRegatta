@@ -23,14 +23,14 @@
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<TextBlock Width="100" Text="Design:" VerticalAlignment="Center"/>
-				<ComboBox Width="150" PlaceholderText="auswählen...">
+				<ComboBox Width="150" PlaceholderText="auswählen..." SelectedItem="{Binding SelectedTheme}">
 					<ComboBoxItem Content="Hell"/>
 					<ComboBoxItem Content="Dunkel"/>
 					<ComboBoxItem Content="System"/>
 				</ComboBox>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="100" Text="Design:" VerticalAlignment="Center"/>
+				<TextBlock Width="100" Text="Webservice URL:" VerticalAlignment="Center"/>
 				<TextBox Width="150" Text="{Binding WebApiBaseUrl, Mode=TwoWay}" PlaceholderText="Webservice Url" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
@@ -41,6 +41,19 @@
 					<ComboBoxItem Content="3"/>
 				</ComboBox>
 			</StackPanel>
+			<StackPanel Orientation="Horizontal" Spacing="10">
+				<TextBlock Width="100" Text="Benutzername:" VerticalAlignment="Center"/>
+				<TextBox Width="150" Text="{Binding UserName, Mode=TwoWay}" PlaceholderText="Benutzername" />
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Spacing="10">
+				<TextBlock Width="100" Text="Passwort:" VerticalAlignment="Center"/>
+				<TextBox Width="150" Text="{Binding Password, Mode=TwoWay}" PlaceholderText="Passwort" />
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Spacing="10">
+				<TextBlock Width="100" Text="Passwort:" VerticalAlignment="Center"/>
+				<CheckBox Width="150" IsChecked="{Binding Password, Mode=TwoWay}" Content="Passwort" />
+			</StackPanel>
+
 			<!-- Weitere Einstellungen hier hinzufügen -->
 		</StackPanel>
 	</Grid>

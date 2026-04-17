@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using de.openelp.regatta.Interfaces;
 using de.openelp.regatta.Models;
 using de.openelp.regatta.Services;
 

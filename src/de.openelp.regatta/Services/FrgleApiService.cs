@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 using System.Threading.Tasks;
+using de.openelp.regatta.Interfaces;
 using de.openelp.regatta.Models;
 
 namespace de.openelp.regatta.Services;
@@ -23,13 +25,19 @@ public class FrgleApiService : IFrgleApiService
     /// <param name="configuration">Central app configuration</param>
     public FrgleApiService(IAppConfiguration? configuration = null)
     {
-        _httpClient = new HttpClient
-        {
-            BaseAddress = AppConfiguration.Current.WebApiBaseUrl != null
-                ? new Uri(AppConfiguration.Current.WebApiBaseUrl)
-                : throw new InvalidOperationException("Web API base URL must be configured.")
-        };
         _configuration = configuration ?? AppConfiguration.Current;
+        
+        var userName = String.IsNullOrEmpty(_configuration.UserName) ? throw new InvalidOperationException("Web API username must be configured.") : _configuration.UserName;
+        var password = String.IsNullOrEmpty(_configuration.Password) ? throw new InvalidOperationException("Web API password must be configured.") : _configuration.Password;
+        var apiBaseUrl = String.IsNullOrEmpty(_configuration.WebApiBaseUrl) ? throw new InvalidOperationException("Web API base URL must be configured.") : _configuration.WebApiBaseUrl;
+
+        var byteArray = Encoding.ASCII.GetBytes($"{userName}:{password}");
+
+        _httpClient = new HttpClient()
+        {
+            BaseAddress = new Uri(apiBaseUrl)
+        };
+        _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
     }
 
     /// <summary>
