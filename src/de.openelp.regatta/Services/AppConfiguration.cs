@@ -7,7 +7,7 @@ namespace de.openelp.regatta.Services;
 /// </summary>
 public sealed class AppConfiguration : IAppConfiguration
 {
-    private string _webApiBaseUrl = "https://frgle";
+    private string _webApiBaseUrl = "https://regatta-test.grinch-tech.de;
 
     /// <summary>
     /// Gets the shared app-wide configuration instance.

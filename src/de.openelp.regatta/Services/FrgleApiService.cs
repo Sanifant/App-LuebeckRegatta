@@ -39,7 +39,7 @@ public class FrgleApiService : IFrgleApiService
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{_configuration.WebApiBaseUrl}/frgle/api/{eventId}/Referee");
+            var response = await _httpClient.GetAsync($"{_configuration.WebApiBaseUrl}/api/{eventId}/Referee");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<RefereeModel>>();
         }
@@ -58,7 +58,7 @@ public class FrgleApiService : IFrgleApiService
         try
         {
             var response = await _httpClient.PutAsync(
-                $"{_configuration.WebApiBaseUrl}/frgle/api/{_configuration.SelectedEventId}/Referee/{refereeId}/warning/{heatId}",
+                $"{_configuration.WebApiBaseUrl}/api/{_configuration.SelectedEventId}/Referee/{refereeId}/warning/{heatId}",
                 null);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
@@ -77,7 +77,7 @@ public class FrgleApiService : IFrgleApiService
     {
         try
         {
-            var response = await _httpClient.PutAsJsonAsync($"{_configuration.WebApiBaseUrl}/frgle/api", raceHeat);
+            var response = await _httpClient.PutAsJsonAsync($"{_configuration.WebApiBaseUrl}/api", raceHeat);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
@@ -95,7 +95,7 @@ public class FrgleApiService : IFrgleApiService
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{_configuration.WebApiBaseUrl}/frgle/api/{eventId}/RaceHeat");
+            var response = await _httpClient.GetAsync($"{_configuration.WebApiBaseUrl}/api/{eventId}/RaceHeat");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<RaceHeatModel>>();
         }

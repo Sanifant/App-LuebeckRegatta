@@ -98,21 +98,6 @@ public partial class RefereeDashboardViewModel : ViewModelBase
         StatusText = $"Verwarnung gesetzt (Bahn {entry.Lane})";
     }
 
-    [RelayCommand]
-    public void CreateGlobalWarning()
-    {
-        if (SelectedReferee == null)
-        {
-            StatusText = "Bitte einen Wettkampfrichter auswählen!";
-            return;
-        }
-
-        foreach (var entry in SelectedHeatEntries)
-            entry.WarningCount += 1;
-
-        StatusText = "Verwarnung für sichtbare Einträge gesetzt.";
-    }
-
     public int EventId
     {
         get => _eventId;

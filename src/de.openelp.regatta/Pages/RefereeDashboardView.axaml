@@ -4,6 +4,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:vm="using:de.openelp.regatta.ViewModels"
+	xmlns:models="using:de.openelp.regatta.Models"
 	mc:Ignorable="d"
 	d:DesignWidth="1280" d:DesignHeight="800"
 	x:Class="de.openelp.regatta.Views.RefereeDashboardView"
@@ -98,9 +99,10 @@
 						</ItemsControl.ItemsPanel>
 
 						<ItemsControl.ItemTemplate>
-							<DataTemplate DataType="vm:HeatEntryTileViewModel">
-								<!-- Boat Tile -->
-								<Border Background="{Binding WarningColor}"
+							<DataTemplate >
+								<!-- Boat Tile Background="{Binding WarningColor}"-->
+								<Border 
+										x:DataType="models:HeatEntryModel"
 										Margin="8">
 									<Grid RowDefinitions="Auto,Auto,*,Auto" ColumnDefinitions="Auto,*" ColumnSpacing="10" RowSpacing="6">
 
@@ -108,6 +110,7 @@
 												CornerRadius="28"
 												VerticalAlignment="Top">
 											<TextBlock Text="{Binding Lane}"
+													   x:DataType="models:HeatEntryModel"
 													   HorizontalAlignment="Center"
 													   VerticalAlignment="Center"
 													   FontSize="22"
@@ -118,20 +121,19 @@
 										<TextBlock Grid.Column="1" Grid.Row="0"
 												   FontSize="18"
 												   FontWeight="SemiBold"
+												   x:DataType="models:HeatEntryModel"
 												   Text="{Binding ShortTeamName}"/>
 										<TextBlock Grid.Column="1" Grid.Row="1"
-												   Classes="lcars-label"
 												   Text="{Binding TeamName}"/>
 
 										<TextBlock Grid.Column="1" Grid.Row="2"
 												   TextWrapping="Wrap"
-												   Text="{Binding AthletesText}"/>
+												   x:DataType="models:HeatEntryModel"
+												   Text="{Binding Athletes}"/>
 
 										<StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" Spacing="10">
-											<Button Command="{Binding $parent[ContentPage].DataContext.CreateWarningForEntryCommand}"
-													CommandParameter="{Binding .}"
-													Content="Verwarnung"/>
-											<TextBlock Classes="lcars-label" Text="{Binding Status}" VerticalAlignment="Center"/>
+											<Button Content="Verwarnung"/>
+											<TextBlock Text="{Binding Status}" VerticalAlignment="Center"/>
 										</StackPanel>
 
 									</Grid>
