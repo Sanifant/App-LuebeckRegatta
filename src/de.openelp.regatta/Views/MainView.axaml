@@ -1,16 +1,82 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="using:de.openelp.regatta.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="de.openelp.regatta.Views.MainView"
-             x:DataType="vm:MainViewModel">
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:MainViewModel />
-  </Design.DataContext>
+<DrawerPage x:Class="de.openelp.regatta.Views.MainView"
+			xmlns="https://github.com/avaloniaui"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			xmlns:vm="using:de.openelp.regatta.ViewModels"
+			xmlns:model="using:de.openelp.regatta.Models"
+			mc:Ignorable="d"
+			d:DesignWidth="800"
+			d:DesignHeight="450"
+			x:DataType="vm:MainViewModel"
+			DrawerLayoutBehavior="Split"
+			IsOpen="{Binding IsDrawerOpened, Mode=TwoWay}"
+			DrawerLength="260"
+			CompactDrawerLength="52"
+			DrawerFooter="{Binding}"
+			Drawer="{Binding}"
+			DrawerHeader="{Binding}">
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MainViewModel />
+	</Design.DataContext>
+	<DrawerPage.Resources>
+		<ResourceDictionary>
+			<x:Double x:Key="TabbedPageTabItemHeaderFontSize">20</x:Double>
+			<Thickness x:Key="TabbedPageTabStripPadding">10</Thickness>
+		</ResourceDictionary>
+	</DrawerPage.Resources>
+	<DrawerPage.Styles>
+		<Style Selector="TextBlock.h2">
+			<Setter Property="TextWrapping" Value="Wrap" />
+			<Setter Property="MaxWidth" Value="400" />
+			<Setter Property="HorizontalAlignment" Value="Left" />
+		</Style>
+	</DrawerPage.Styles>
+	<DrawerPage.DrawerTemplate>
+		<DataTemplate x:DataType="vm:MainViewModel">
+			<ListBox ItemsSource="{Binding Pages}"
+					Padding="0,10,0,10"
+					Background="Transparent"
+					ItemContainerTheme="{StaticResource NavHeaderItem}"
+					SelectedIndex="{Binding SelectedPageIndex}">
+				<ListBox.ItemTemplate>
+					<DataTemplate x:DataType="model:PageItem">
+						<Grid ColumnDefinitions="20,*">
+							<PathIcon Grid.Column="0" Width="16" Height="16"
+										HorizontalAlignment="Center"
+										VerticalAlignment="Center"
+										Data="{Binding IconData}"/>
+							<TextBlock Grid.Column="1" Text="{Binding Header}"
+										VerticalAlignment="Center"
+										Margin="12,0,0,0"
+										TextTrimming="CharacterEllipsis"/>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</DataTemplate>
+	</DrawerPage.DrawerTemplate>
+	<DrawerPage.DrawerHeaderTemplate>
+		<DataTemplate x:DataType="vm:MainViewModel">
+			<DockPanel LastChildFill="True" Margin="6">
+				<Border HorizontalAlignment="Stretch" Padding="10">
+					<Image Source="/Assets/lrvLogo.png" VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+							MaxHeight="120"
+							Stretch="Uniform"/>
+				</Border>
+			</DockPanel>
+		</DataTemplate>
+	</DrawerPage.DrawerHeaderTemplate>
+	<DrawerPage.DrawerFooterTemplate>
+		<DataTemplate x:DataType="vm:MainViewModel">
+			<TextBlock Text="{Binding Version}"	
+					HorizontalAlignment="Center"
+					Margin="0,10" />
+		</DataTemplate>
+	</DrawerPage.DrawerFooterTemplate>
+	<NavigationPage Name="NavPage"/>
+</DrawerPage>
 
-  <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-</UserControl>

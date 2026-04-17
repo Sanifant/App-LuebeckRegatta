@@ -1,16 +1,18 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
-using Avalonia.Data.Core.Plugins;
-using System.Linq;
 using Avalonia.Markup.Xaml;
+using de.openelp.regatta.Services;
 using de.openelp.regatta.ViewModels;
 using de.openelp.regatta.Views;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace de.openelp.regatta;
 
 public partial class App : Application
 {
+    public static IServiceProvider Services { get; private set; } = default!;
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -18,37 +20,37 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        var collection = new ServiceCollection();
+        collection.AddSingleton<RaceHeatApiClient>();
+        collection.AddTransient<MainViewModel>();
+        collection.AddTransient<RefereeDashboardViewModel>();
+        collection.AddTransient<SettingsViewModel>();
+
+        // Creates a ServiceProvider containing services from the provided IServiceCollection
+        Services = collection.BuildServiceProvider();
+
+        var vm = Services.GetRequiredService<MainViewModel>();
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
-            // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
-            DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainViewModel()
+                DataContext = vm
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            singleViewPlatform.MainView = new AppShellView
+            singleViewPlatform.MainView = new MainView
             {
-                DataContext = new MainViewModel()
+                DataContext = vm
             };
         }
 
         base.OnFrameworkInitializationCompleted();
     }
 
-    private void DisableAvaloniaDataAnnotationValidation()
+    public override void RegisterServices()
     {
-        // Get an array of plugins to remove
-        var dataValidationPluginsToRemove =
-            BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
-
-        // remove each entry found
-        foreach (var plugin in dataValidationPluginsToRemove)
-        {
-            BindingPlugins.DataValidators.Remove(plugin);
-        }
+        base.RegisterServices();
     }
 }

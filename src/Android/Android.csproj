@@ -2,14 +2,14 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net10.0-android</TargetFramework>
-        <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion>23</SupportedOSPlatformVersion>
         <Nullable>enable</Nullable>
-        <ApplicationId>com.CompanyName.AvaloniaApplication1</ApplicationId>
+        <ApplicationId>de.openelp.regatta</ApplicationId>
         <ApplicationVersion>1</ApplicationVersion>
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
         <AndroidPackageFormat>apk</AndroidPackageFormat>
         <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
-        <RootNamespace>AvaloniaApplication1.Android</RootNamespace>
+        <RootNamespace>de.openelp.regatta.Android</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

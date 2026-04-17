@@ -14,9 +14,15 @@ public class RaceHeatApiClient
     private readonly HttpClient _http;
     private readonly JsonSerializerOptions _json;
 
-    public RaceHeatApiClient(HttpClient http, JsonSerializerOptions? jsonOptions = null)
+    public RaceHeatApiClient(JsonSerializerOptions? jsonOptions = null)
     {
-        _http = http ?? throw new ArgumentNullException(nameof(http));
+        _http = new HttpClient
+        {
+            BaseAddress = AppConfiguration.Current.WebApiBaseUrl != null
+                ? new Uri(AppConfiguration.Current.WebApiBaseUrl)
+                : throw new InvalidOperationException("Web API base URL must be configured.")
+        };
+
         _json = jsonOptions ?? new JsonSerializerOptions(JsonSerializerDefaults.Web);
     }
 

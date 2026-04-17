@@ -17,6 +17,8 @@ public partial class RefereeDashboardViewModel : ViewModelBase
     private readonly RaceHeatApiClient _api;
     private readonly IAppConfiguration _configuration;
 
+    private Timer _clockTimer;
+
     private int _eventId;
     private RefereeModel? _selectedReferee;
     private RaceHeatModel? _selectedHeat;
@@ -36,8 +38,14 @@ public partial class RefereeDashboardViewModel : ViewModelBase
 
         EventId = _configuration.SelectedEventId;
 
-        ClockText = DateTime.Now.ToString("dd.MM.yyyy • HH:mm");
+        _clockTimer = new Timer(_ =>
+        {
+            ClockText = DateTime.Now.ToString("HH:mm:ss");
+        }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+
         StatusText = "Bereit.";
+
+        
     }
 
     public ObservableCollection<RefereeModel> Referees { get; }

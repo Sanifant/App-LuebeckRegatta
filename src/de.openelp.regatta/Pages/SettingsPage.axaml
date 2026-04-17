@@ -1,0 +1,47 @@
+<ContentPage xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:de.openelp.regatta.ViewModels"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:DataType="vm:SettingsViewModel"
+			 x:Class="de.openelp.regatta.SettingsPage">
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:SettingsViewModel />
+	</Design.DataContext>
+	<Grid>
+		  <StackPanel Margin="14" Spacing="10">
+			<TextBlock Text="Einstellungen" FontSize="24" FontWeight="Bold"/>
+			<StackPanel Orientation="Horizontal" Spacing="10">
+				<TextBlock Width="100" Text="Sprache:" VerticalAlignment="Center"/>
+				<ComboBox Width="150" PlaceholderText="auswählen...">
+					<ComboBoxItem Content="Deutsch"/>
+					<ComboBoxItem Content="Englisch"/>
+				</ComboBox>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Spacing="10">
+				<TextBlock Width="100" Text="Design:" VerticalAlignment="Center"/>
+				<ComboBox Width="150" PlaceholderText="auswählen...">
+					<ComboBoxItem Content="Hell"/>
+					<ComboBoxItem Content="Dunkel"/>
+					<ComboBoxItem Content="System"/>
+				</ComboBox>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Spacing="10">
+				<TextBlock Width="100" Text="Design:" VerticalAlignment="Center"/>
+				<TextBox Width="150" Text="{Binding WebApiBaseUrl, Mode=TwoWay}" PlaceholderText="Webservice Url" />
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Spacing="10">
+				<TextBlock Width="100" Text="Event:" VerticalAlignment="Center"/>
+				<ComboBox Width="150" PlaceholderText="auswählen..." SelectedItem="{Binding SelectedEventId}">
+					<ComboBoxItem Content="1"/>
+					<ComboBoxItem Content="2"/>
+					<ComboBoxItem Content="3"/>
+				</ComboBox>
+			</StackPanel>
+			<!-- Weitere Einstellungen hier hinzufügen -->
+		</StackPanel>
+	</Grid>
+</ContentPage>

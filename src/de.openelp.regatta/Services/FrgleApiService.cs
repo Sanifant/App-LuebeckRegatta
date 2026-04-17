@@ -21,9 +21,14 @@ public class FrgleApiService : IFrgleApiService
     /// </summary>
     /// <param name="httpClient">The HTTP client</param>
     /// <param name="configuration">Central app configuration</param>
-    public FrgleApiService(HttpClient httpClient, IAppConfiguration? configuration = null)
+    public FrgleApiService(IAppConfiguration? configuration = null)
     {
-        _httpClient = httpClient;
+        _httpClient = new HttpClient
+        {
+            BaseAddress = AppConfiguration.Current.WebApiBaseUrl != null
+                ? new Uri(AppConfiguration.Current.WebApiBaseUrl)
+                : throw new InvalidOperationException("Web API base URL must be configured.")
+        };
         _configuration = configuration ?? AppConfiguration.Current;
     }
 
