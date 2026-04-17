@@ -12,6 +12,11 @@
         <RunAOTCompilation>false</RunAOTCompilation>
         <RootNamespace>de.openelp.regatta.Android</RootNamespace>
         <PublishTrimmed>false</PublishTrimmed>
+        <OutputPath>..\release</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <AndroidSdkDirectory>/workspaces/android-sdk</AndroidSdkDirectory>
     </PropertyGroup>
 
     <ItemGroup>
