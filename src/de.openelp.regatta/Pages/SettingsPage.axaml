@@ -10,43 +10,47 @@
 		<StackPanel Margin="14" Spacing="10">
 			<TextBlock Text="Einstellungen" FontSize="24" FontWeight="Bold"/>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="120" Text="Sprache:" VerticalAlignment="Center"/>
-				<ComboBox Width="150" PlaceholderText="auswählen...">
+				<Label Width="120" Content="Sprache:" VerticalAlignment="Center"/>
+				<ComboBox Width="250" PlaceholderText="auswählen...">
 					<ComboBoxItem Content="Deutsch"/>
 					<ComboBoxItem Content="Englisch"/>
 				</ComboBox>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="120" Text="Design:" VerticalAlignment="Center"/>
-				<ComboBox Width="150" PlaceholderText="auswählen..." SelectedItem="{Binding SelectedTheme}">
+				<Label Width="120" Content="Design:" VerticalAlignment="Center"/>
+				<ComboBox Width="250" PlaceholderText="auswählen..." SelectedItem="{Binding SelectedTheme}">
 					<ComboBoxItem Content="Hell"/>
 					<ComboBoxItem Content="Dunkel"/>
 					<ComboBoxItem Content="System"/>
 				</ComboBox>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="120" Text="Webservice URL:" VerticalAlignment="Center"/>
-				<TextBox Width="150" Text="{Binding WebApiBaseUrl, Mode=TwoWay}" PlaceholderText="Webservice Url" />
+				<Label Width="120" Content="Webservice URL:" VerticalAlignment="Center"/>
+				<TextBox Width="250" Text="{Binding WebApiBaseUrl, Mode=TwoWay}" PlaceholderText="Webservice Url" />
+				<Rectangle Fill="OrangeRed" Width="20" Height="20" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="120" Text="Event:" VerticalAlignment="Center"/>
-				<ComboBox Width="150" PlaceholderText="auswählen..." SelectedItem="{Binding SelectedEventId}">
+				<Label Width="120" Content="Event:" VerticalAlignment="Center"/>
+				<ComboBox Width="250" PlaceholderText="auswählen..." SelectedItem="{Binding SelectedEventId}">
 					<x:Int32>1</x:Int32>
 					<x:Int32>2</x:Int32>
 					<x:Int32>3</x:Int32>
 				</ComboBox>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="120" Text="Benutzername:" VerticalAlignment="Center"/>
-				<TextBox Width="150" Text="{Binding UserName, Mode=TwoWay}" PlaceholderText="Benutzername" />
+				<Label Width="120" Content="Benutzername:" VerticalAlignment="Center"/>
+				<TextBox Width="250" Text="{Binding UserName, Mode=TwoWay}" PlaceholderText="Benutzername" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="120" Text="Passwort:" VerticalAlignment="Center"/>
-				<TextBox Width="150" Text="{Binding Password, Mode=TwoWay}" PasswordChar="●"  PlaceholderText="Passwort" />
+				<Label Width="120" Content="Passwort:" VerticalAlignment="Center"/>
+				<TextBox Width="250" Text="{Binding Password, Mode=TwoWay}" PasswordChar="●"  PlaceholderText="Passwort" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Width="120" Text="Is Debug:" VerticalAlignment="Center"/>
-				<CheckBox Width="150" IsChecked="{Binding IsDebugMode, Mode=TwoWay}" />
+				<Button Content="Verbindung testen..." Width="250" Margin="130, 0, 0, 0" />
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Spacing="10">
+				<Label Width="120" Content="Is Debug:" VerticalAlignment="Center"/>
+				<CheckBox Width="250" IsChecked="{Binding IsDebugMode, Mode=TwoWay}" />
 			</StackPanel>
 
 			<!-- Weitere Einstellungen hier hinzufügen -->
