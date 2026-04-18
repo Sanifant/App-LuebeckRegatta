@@ -1,22 +1,46 @@
+using de.openelp.regatta.Interfaces;
+using de.openelp.regatta.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using de.openelp.regatta.Models;
 
 namespace de.openelp.regatta.Services;
 
-public class RaceHeatApiClient
+public interface IRaceHeatApiClient
+{
+    Task<RaceHeatModel?> GetHeatDetailsAsync(int eventId, int raceHeatId, CancellationToken ct = default);
+    Task<List<RaceHeatModel>> GetHeatsAsync(int eventId, CancellationToken ct = default);
+    Task SetRefereeAsync(int eventId, int raceHeatId, RefereeModel referee, CancellationToken ct = default);
+    Task StopRaceAsync(int eventId, int raceHeatId, RaceHeatModel heat, CancellationToken ct = default);
+}
+
+public class RaceHeatApiClient : IRaceHeatApiClient
 {
     private readonly HttpClient _http;
     private readonly JsonSerializerOptions _json;
+    private IAppConfiguration _configuration;
 
-    public RaceHeatApiClient(HttpClient http, JsonSerializerOptions? jsonOptions = null)
+    public RaceHeatApiClient(IAppConfiguration configuration, JsonSerializerOptions? jsonOptions = null)
     {
-        _http = http ?? throw new ArgumentNullException(nameof(http));
+        _configuration = configuration ?? AppConfiguration.Current;
+
+        var userName = String.IsNullOrEmpty(_configuration.UserName) ? throw new InvalidOperationException("Web API username must be configured.") : _configuration.UserName;
+        var password = String.IsNullOrEmpty(_configuration.Password) ? throw new InvalidOperationException("Web API password must be configured.") : _configuration.Password;
+        var apiBaseUrl = String.IsNullOrEmpty(_configuration.WebApiBaseUrl) ? throw new InvalidOperationException("Web API base URL must be configured.") : _configuration.WebApiBaseUrl;
+
+        var byteArray = Encoding.ASCII.GetBytes($"{userName}:{password}");
+
+        _http = new HttpClient()
+        {
+            BaseAddress = new Uri(apiBaseUrl)
+        };
+        _http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
         _json = jsonOptions ?? new JsonSerializerOptions(JsonSerializerDefaults.Web);
     }
 

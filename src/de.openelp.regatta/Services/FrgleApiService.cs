@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 using System.Threading.Tasks;
+using de.openelp.regatta.Interfaces;
 using de.openelp.regatta.Models;
 
 namespace de.openelp.regatta.Services;
@@ -21,10 +23,21 @@ public class FrgleApiService : IFrgleApiService
     /// </summary>
     /// <param name="httpClient">The HTTP client</param>
     /// <param name="configuration">Central app configuration</param>
-    public FrgleApiService(HttpClient httpClient, IAppConfiguration? configuration = null)
+    public FrgleApiService(IAppConfiguration? configuration = null)
     {
-        _httpClient = httpClient;
         _configuration = configuration ?? AppConfiguration.Current;
+        
+        var userName = String.IsNullOrEmpty(_configuration.UserName) ? throw new InvalidOperationException("Web API username must be configured.") : _configuration.UserName;
+        var password = String.IsNullOrEmpty(_configuration.Password) ? throw new InvalidOperationException("Web API password must be configured.") : _configuration.Password;
+        var apiBaseUrl = String.IsNullOrEmpty(_configuration.WebApiBaseUrl) ? throw new InvalidOperationException("Web API base URL must be configured.") : _configuration.WebApiBaseUrl;
+
+        var byteArray = Encoding.ASCII.GetBytes($"{userName}:{password}");
+
+        _httpClient = new HttpClient()
+        {
+            BaseAddress = new Uri(apiBaseUrl)
+        };
+        _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
     }
 
     /// <summary>
@@ -34,7 +47,7 @@ public class FrgleApiService : IFrgleApiService
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{_configuration.WebApiBaseUrl}/frgle/api/{eventId}/Referee");
+            var response = await _httpClient.GetAsync($"{_configuration.WebApiBaseUrl}/api/{eventId}/Referee");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<RefereeModel>>();
         }
@@ -53,7 +66,7 @@ public class FrgleApiService : IFrgleApiService
         try
         {
             var response = await _httpClient.PutAsync(
-                $"{_configuration.WebApiBaseUrl}/frgle/api/{_configuration.SelectedEventId}/Referee/{refereeId}/warning/{heatId}",
+                $"{_configuration.WebApiBaseUrl}/api/{_configuration.SelectedEventId}/Referee/{refereeId}/warning/{heatId}",
                 null);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
@@ -72,7 +85,7 @@ public class FrgleApiService : IFrgleApiService
     {
         try
         {
-            var response = await _httpClient.PutAsJsonAsync($"{_configuration.WebApiBaseUrl}/frgle/api", raceHeat);
+            var response = await _httpClient.PutAsJsonAsync($"{_configuration.WebApiBaseUrl}/api", raceHeat);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
@@ -90,7 +103,7 @@ public class FrgleApiService : IFrgleApiService
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{_configuration.WebApiBaseUrl}/frgle/api/{eventId}/RaceHeat");
+            var response = await _httpClient.GetAsync($"{_configuration.WebApiBaseUrl}/api/{eventId}/RaceHeat");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<RaceHeatModel>>();
         }
@@ -108,7 +121,7 @@ public class FrgleApiService : IFrgleApiService
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{_configuration.WebApiBaseUrl}/frgle/api/{eventId}/RaceHeat/{raceId}");
+            var response = await _httpClient.GetAsync($"{_configuration.WebApiBaseUrl}/api/{eventId}/RaceHeat/{raceId}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<RaceHeatModel>();
         }
@@ -127,7 +140,7 @@ public class FrgleApiService : IFrgleApiService
         try
         {
             var response = await _httpClient.PostAsJsonAsync(
-                $"{_configuration.WebApiBaseUrl}/frgle/api/{_configuration.SelectedEventId}/RaceHeat/{raceId}/referee",
+                $"{_configuration.WebApiBaseUrl}/api/{_configuration.SelectedEventId}/RaceHeat/{raceId}/referee",
                 referee);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
@@ -147,7 +160,7 @@ public class FrgleApiService : IFrgleApiService
         try
         {
             var response = await _httpClient.PostAsJsonAsync(
-                $"{_configuration.WebApiBaseUrl}/frgle/api/{eventId}/RaceHeat/{raceId}/stop",
+                $"{_configuration.WebApiBaseUrl}/api/{eventId}/RaceHeat/{raceId}/stop",
                 raceHeat);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();

@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Android AAB (Release)",
+            "type": "shell",
+            "command": "dotnet build src/Android/Android.csproj -c Release -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=${workspaceFolder}/android-upload.keystore -p:AndroidSigningKeyAlias=release -p:AndroidSigningKeyPass=${env:ANDROID_SIGNING_KEY_PASS} -p:AndroidSigningStorePass=${env:ANDROID_SIGNING_STORE_PASS} -p:AndroidSdkDirectory=/workspaces/android-sdk && mkdir -p ${workspaceFolder}/release && cp ${workspaceFolder}/src/Android/bin/Release/net10.0-android/de.openelp.regatta-Signed.aab ${workspaceFolder}/release/",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

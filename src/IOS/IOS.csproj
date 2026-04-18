@@ -1,18 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework Condition="!$([MSBuild]::IsOSPlatform('osx'))">net10.0</TargetFramework>
-        <TargetFramework Condition="$([MSBuild]::IsOSPlatform('osx'))">net10.0-ios</TargetFramework>
         <SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
         <Nullable>enable</Nullable>
-        <RootNamespace>AvaloniaApplication1.iOS</RootNamespace>
+        <RootNamespace>de.openelp.regatta.iOS</RootNamespace>
     </PropertyGroup>
 
-    <ItemGroup>
+	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+		<TargetFramework>net10.0-ios</TargetFramework>
+		<SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="!$([MSBuild]::IsOSPlatform('OSX'))">
+		<!-- Keep restore/build green on non-macOS runners where iOS workloads are unavailable. -->
+		<TargetFramework>net10.0</TargetFramework>
+		<OutputType>Library</OutputType>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
         <PackageReference Include="Avalonia.iOS"/>
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
         <ProjectReference Include="..\de.openelp.regatta\de.openelp.regatta.csproj" />
     </ItemGroup>
+
+	<ItemGroup Condition="!$([MSBuild]::IsOSPlatform('OSX'))">
+		<Compile Remove="**\*.cs" />
+		<None Include="Main.cs" Visible="false" />
+	</ItemGroup>
+
+	<Target Name="ExplainNonMacIosProject" BeforeTargets="Build" Condition="!$([MSBuild]::IsOSPlatform('OSX'))">
+		<Message Importance="high" Text="iOS project build is disabled on non-macOS. Use macOS to build this project." />
+	</Target>
 </Project>

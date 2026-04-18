@@ -1,16 +1,19 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
-using Avalonia.Data.Core.Plugins;
-using System.Linq;
 using Avalonia.Markup.Xaml;
+using de.openelp.regatta.Interfaces;
+using de.openelp.regatta.Services;
 using de.openelp.regatta.ViewModels;
 using de.openelp.regatta.Views;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace de.openelp.regatta;
 
 public partial class App : Application
 {
+    public static IServiceProvider Services { get; private set; } = default!;
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -18,37 +21,46 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        var collection = new ServiceCollection();
+
+        var appConfiguration = AppConfiguration.Current;
+        var webApiBaseUrlOverride = Environment.GetEnvironmentVariable("REGATTA_WEB_API_BASE_URL");
+        if (!string.IsNullOrWhiteSpace(webApiBaseUrlOverride))
+        {
+            appConfiguration.WebApiBaseUrl = webApiBaseUrlOverride;
+        }
+
+#if DEBUG
+        appConfiguration.IsDebugMode = true;
+#endif
+
+        collection.AddSingleton<IAppConfiguration>(appConfiguration);
+        collection.AddSingleton<IRaceHeatApiClient, RaceHeatApiClient>();
+        collection.AddTransient<MainViewModel>();
+        collection.AddTransient<RefereeDashboardViewModel>();
+        collection.AddTransient<SettingsViewModel>();
+        collection.AddTransient<HomeViewModel>();
+
+        // Creates a ServiceProvider containing services from the provided IServiceCollection
+        Services = collection.BuildServiceProvider();
+
+        var vm = Services.GetRequiredService<MainViewModel>();
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
-            // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
-            DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainViewModel()
+                DataContext = vm
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            singleViewPlatform.MainView = new AppShellView
+            singleViewPlatform.MainView = new MainView
             {
-                DataContext = new MainViewModel()
+                DataContext = vm
             };
         }
 
         base.OnFrameworkInitializationCompleted();
-    }
-
-    private void DisableAvaloniaDataAnnotationValidation()
-    {
-        // Get an array of plugins to remove
-        var dataValidationPluginsToRemove =
-            BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
-
-        // remove each entry found
-        foreach (var plugin in dataValidationPluginsToRemove)
-        {
-            BindingPlugins.DataValidators.Remove(plugin);
-        }
     }
 }

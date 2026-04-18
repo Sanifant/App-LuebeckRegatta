@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using de.openelp.regatta.Models;
 
-namespace de.openelp.regatta.Services;
+namespace de.openelp.regatta.Interfaces;
 
 /// <summary>
 /// Interface for the frgle API service

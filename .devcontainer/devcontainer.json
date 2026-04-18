@@ -3,7 +3,11 @@
   "image": "mcr.microsoft.com/devcontainers/dotnet:2-10.0",
   
   "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21",
+      "jdkDistro": "open"
+    }
   },
 
   "postCreateCommand": "bash .devcontainer/setup.sh",
@@ -20,7 +24,8 @@
         "github.vscode-pull-request-github",
         "eamodio.gitlens",
         "editorconfig.editorconfig",
-        "AvaloniaTeam.vscode-avalonia"
+        "AvaloniaTeam.vscode-avalonia",
+        "GitHub.vscode-codeql"
       ],
       "settings": {
         "dotnet.defaultSolution": "src/LuebeckRegatta.slnx",

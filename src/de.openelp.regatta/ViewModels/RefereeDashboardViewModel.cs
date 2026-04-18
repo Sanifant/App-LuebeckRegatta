@@ -7,15 +7,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using de.openelp.regatta.Interfaces;
 using de.openelp.regatta.Models;
 using de.openelp.regatta.Services;
 
 namespace de.openelp.regatta.ViewModels;
 
-public partial class RefereeDashboardViewModel : ViewModelBase
+public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
 {
-    private readonly RaceHeatApiClient _api;
+    private readonly IRaceHeatApiClient _api;
     private readonly IAppConfiguration _configuration;
+
+    private readonly Timer _clockTimer;
 
     private int _eventId;
     private RefereeModel? _selectedReferee;
@@ -24,7 +27,7 @@ public partial class RefereeDashboardViewModel : ViewModelBase
     private string _statusText = "";
     private string _clockText = "";
 
-    public RefereeDashboardViewModel(RaceHeatApiClient api, IAppConfiguration? configuration = null)
+    public RefereeDashboardViewModel(IRaceHeatApiClient api, IAppConfiguration? configuration = null)
     {
         _api = api ?? throw new ArgumentNullException(nameof(api));
         _configuration = configuration ?? AppConfiguration.Current;
@@ -36,8 +39,14 @@ public partial class RefereeDashboardViewModel : ViewModelBase
 
         EventId = _configuration.SelectedEventId;
 
-        ClockText = DateTime.Now.ToString("dd.MM.yyyy • HH:mm");
+        _clockTimer = new Timer(_ =>
+        {
+            ClockText = DateTime.Now.ToString("HH:mm:ss");
+        }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+
         StatusText = "Bereit.";
+
+        
     }
 
     public ObservableCollection<RefereeModel> Referees { get; }
@@ -88,21 +97,6 @@ public partial class RefereeDashboardViewModel : ViewModelBase
         // Daher: UI-Mock-Logik wie in RefereeView.java (farblich eskalieren).
         entry.WarningCount += 1;
         StatusText = $"Verwarnung gesetzt (Bahn {entry.Lane})";
-    }
-
-    [RelayCommand]
-    public void CreateGlobalWarning()
-    {
-        if (SelectedReferee == null)
-        {
-            StatusText = "Bitte einen Wettkampfrichter auswählen!";
-            return;
-        }
-
-        foreach (var entry in SelectedHeatEntries)
-            entry.WarningCount += 1;
-
-        StatusText = "Verwarnung für sichtbare Einträge gesetzt.";
     }
 
     public int EventId
@@ -261,5 +255,11 @@ public partial class RefereeDashboardViewModel : ViewModelBase
         {
             SelectedHeat = Heats[currentIndex - 1];
         }
+    }
+
+    public void Dispose()
+    {
+        _clockTimer.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
