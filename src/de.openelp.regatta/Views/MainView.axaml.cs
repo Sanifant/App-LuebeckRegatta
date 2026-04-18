@@ -15,11 +15,9 @@ public partial class MainView : DrawerPage
     {
         base.OnDataContextChanged(e);
 
-        if (ViewModel != null)
+        if (DataContext is MainViewModel vm)
         {
-            ViewModel.Navigator = NavPage;
+            vm.Navigator = NavPage;
         }
     }
-
-    internal MainViewModel ViewModel => (MainViewModel)DataContext!;
 }

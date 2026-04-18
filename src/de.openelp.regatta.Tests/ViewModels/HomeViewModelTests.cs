@@ -10,6 +10,7 @@ namespace de.openelp.regatta.Tests.ViewModels;
 /// </summary>
 public class HomeViewModelTests
 {
+    [Fact]
     public Task Test_that_welcome_message_is_set()
     {
         // Arrange

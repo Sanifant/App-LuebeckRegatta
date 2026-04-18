@@ -5,7 +5,7 @@
 			 xmlns:vm="using:de.openelp.regatta.ViewModels"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:SettingsViewModel"
-			 x:Class="de.openelp.regatta.SettingsPage">
+			 x:Class="de.openelp.regatta.Pages.SettingsPage">
 	<Grid>
 		<StackPanel Margin="14" Spacing="10">
 			<TextBlock Text="Einstellungen" FontSize="24" FontWeight="Bold"/>
@@ -31,9 +31,9 @@
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<TextBlock Width="120" Text="Event:" VerticalAlignment="Center"/>
 				<ComboBox Width="150" PlaceholderText="auswählen..." SelectedItem="{Binding SelectedEventId}">
-					<ComboBoxItem Content="1"/>
-					<ComboBoxItem Content="2"/>
-					<ComboBoxItem Content="3"/>
+					<x:Int32>1</x:Int32>
+					<x:Int32>2</x:Int32>
+					<x:Int32>3</x:Int32>
 				</ComboBox>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
@@ -42,11 +42,11 @@
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<TextBlock Width="120" Text="Passwort:" VerticalAlignment="Center"/>
-				<TextBox Width="150" Text="{Binding Password, Mode=TwoWay}" PlaceholderText="Passwort" />
+				<TextBox Width="150" Text="{Binding Password, Mode=TwoWay}" PasswordChar="●"  PlaceholderText="Passwort" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<TextBlock Width="120" Text="Is Debug:" VerticalAlignment="Center"/>
-				<CheckBox Width="150" IsChecked="{Binding Password, Mode=TwoWay}" />
+				<CheckBox Width="150" IsChecked="{Binding IsDebugMode, Mode=TwoWay}" />
 			</StackPanel>
 
 			<!-- Weitere Einstellungen hier hinzufügen -->

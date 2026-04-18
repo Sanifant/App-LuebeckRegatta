@@ -5,7 +5,7 @@ using System.Text;
 namespace de.openelp.regatta.Models
 {
     /// <summary>
-    /// 
+    /// Represents a page entry with a header, content factory, and optional icon data.
     /// </summary>
     public class PageItem(string header, Func<object> factory, string? iconData = null)
     {

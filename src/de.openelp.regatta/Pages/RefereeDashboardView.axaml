@@ -7,7 +7,7 @@
 	xmlns:models="using:de.openelp.regatta.Models"
 	mc:Ignorable="d"
 	d:DesignWidth="1280" d:DesignHeight="800"
-	x:Class="de.openelp.regatta.Views.RefereeDashboardView"
+	x:Class="de.openelp.regatta.Pages.RefereeDashboardView"
 	x:DataType="vm:RefereeDashboardViewModel">
 	<Grid ColumnDefinitions="240, *" RowDefinitions="Auto, *">
 		<!-- Top Bar -->

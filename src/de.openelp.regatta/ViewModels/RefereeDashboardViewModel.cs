@@ -260,5 +260,6 @@ public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
     public void Dispose()
     {
         _clockTimer.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

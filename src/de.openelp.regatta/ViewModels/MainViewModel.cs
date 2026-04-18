@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using de.openelp.regatta.Models;
 using de.openelp.regatta.Views;
+using de.openelp.regatta.Pages;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;

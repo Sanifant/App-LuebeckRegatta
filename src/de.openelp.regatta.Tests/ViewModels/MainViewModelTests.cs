@@ -11,6 +11,11 @@ namespace de.openelp.regatta.Tests.ViewModels;
 /// </summary>
 public class MainViewModelTests
 {
+    /// <summary>
+    /// Tests the that pages are initialized.
+    /// </summary>
+    /// <returns></returns>
+    [Fact]
     public Task Test_that_pages_are_initialized()
     {
         // Arrange
@@ -27,6 +32,11 @@ public class MainViewModelTests
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Tests the that navigator is null by default.
+    /// </summary>
+    /// <returns></returns>
+    [Fact]
     public Task Test_that_navigator_is_null_by_default()
     {
         // Arrange
@@ -40,6 +50,7 @@ public class MainViewModelTests
         return Task.CompletedTask;
     }
 
+    [Fact]
     public Task Test_that_version_is_set()
     {
         // Arrange
@@ -54,6 +65,7 @@ public class MainViewModelTests
         return Task.CompletedTask;
     }
 
+    [Fact]
     public Task Test_that_is_drawer_opened_is_false_by_default()
     {
         // Arrange
@@ -67,6 +79,7 @@ public class MainViewModelTests
         return Task.CompletedTask;
     }
 
+    [Fact]
     public Task Test_that_selected_page_index_navigates_to_page()
     {
         // Arrange

@@ -2,7 +2,7 @@ using Avalonia.Controls;
 using de.openelp.regatta.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace de.openelp.regatta.Views;
+namespace de.openelp.regatta.Pages;
 
 public partial class RefereeDashboardView : ContentPage
 {
@@ -10,6 +10,11 @@ public partial class RefereeDashboardView : ContentPage
     {
         InitializeComponent();
 
-        DataContext = App.Services.GetRequiredService<RefereeDashboardViewModel>();
+        var viewModel = App.Services.GetService<RefereeDashboardViewModel>();
+        if (viewModel is null)
+        {
+            throw new System.InvalidOperationException($"{nameof(RefereeDashboardViewModel)} is not registered in the application service provider.");
+        }
+        DataContext = viewModel;
     }
 }

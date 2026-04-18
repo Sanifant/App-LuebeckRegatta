@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using de.openelp.regatta.Interfaces;
 using de.openelp.regatta.Services;
 using de.openelp.regatta.ViewModels;
 using de.openelp.regatta.Views;
@@ -21,10 +22,24 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         var collection = new ServiceCollection();
+
+        var appConfiguration = AppConfiguration.Current;
+        var webApiBaseUrlOverride = Environment.GetEnvironmentVariable("REGATTA_WEB_API_BASE_URL");
+        if (!string.IsNullOrWhiteSpace(webApiBaseUrlOverride))
+        {
+            appConfiguration.WebApiBaseUrl = webApiBaseUrlOverride;
+        }
+
+#if DEBUG
+        appConfiguration.IsDebugMode = true;
+#endif
+
+        collection.AddSingleton<IAppConfiguration>(appConfiguration);
         collection.AddSingleton<IRaceHeatApiClient, RaceHeatApiClient>();
         collection.AddTransient<MainViewModel>();
         collection.AddTransient<RefereeDashboardViewModel>();
         collection.AddTransient<SettingsViewModel>();
+        collection.AddTransient<HomeViewModel>();
 
         // Creates a ServiceProvider containing services from the provided IServiceCollection
         Services = collection.BuildServiceProvider();
