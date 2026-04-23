@@ -3,6 +3,7 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:de.openelp.regatta.ViewModels"
+			 xmlns:models="using:de.openelp.regatta.Models"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:SettingsViewModel"
 			 x:Class="de.openelp.regatta.Pages.SettingsPage">
@@ -11,46 +12,54 @@
 			<TextBlock Text="Einstellungen" FontSize="24" FontWeight="Bold"/>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Label Width="120" Content="Sprache:" VerticalAlignment="Center"/>
-				<ComboBox Width="250" PlaceholderText="auswählen...">
+				<ComboBox Width="320" PlaceholderText="Sprache auswählen..." IsEnabled="false">
 					<ComboBoxItem Content="Deutsch"/>
 					<ComboBoxItem Content="Englisch"/>
 				</ComboBox>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Label Width="120" Content="Design:" VerticalAlignment="Center"/>
-				<ComboBox Width="250" PlaceholderText="auswählen..." SelectedItem="{Binding SelectedTheme}">
-					<ComboBoxItem Content="Hell"/>
-					<ComboBoxItem Content="Dunkel"/>
-					<ComboBoxItem Content="System"/>
+				<ComboBox Width="320" PlaceholderText="Design auswählen..." 
+						  SelectedItem="{Binding SelectedTheme}" 
+						  IsEnabled="false" 
+						  ItemsSource="{Binding AvailableThemes, Mode=OneWay}">
 				</ComboBox>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Label Width="120" Content="Webservice URL:" VerticalAlignment="Center"/>
-				<TextBox Width="250" Text="{Binding WebApiBaseUrl, Mode=TwoWay}" PlaceholderText="Webservice Url" />
-				<Rectangle Fill="OrangeRed" Width="20" Height="20" />
+				<TextBox Width="320" Text="{Binding WebApiBaseUrl, Mode=TwoWay}"
+						 PlaceholderText="Webservice Url" />
+				<Rectangle Fill="{Binding UrlValid}" Width="20" Height="20" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Label Width="120" Content="Event:" VerticalAlignment="Center"/>
-				<ComboBox Width="250" PlaceholderText="auswählen..." SelectedItem="{Binding SelectedEventId}">
-					<x:Int32>1</x:Int32>
-					<x:Int32>2</x:Int32>
-					<x:Int32>3</x:Int32>
+				<ComboBox Width="320" PlaceholderText="Regatta auswählen..." 
+						  SelectedItem="{Binding SelectedEvent}" 
+						  DisplayMemberBinding="{Binding Title}"
+						  ItemsSource="{Binding AvailableEvents, Mode=OneWay}">
 				</ComboBox>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Label Width="120" Content="Benutzername:" VerticalAlignment="Center"/>
-				<TextBox Width="250" Text="{Binding UserName, Mode=TwoWay}" PlaceholderText="Benutzername" />
+				<TextBox Width="320" Text="{Binding UserName, Mode=TwoWay}" PlaceholderText="Benutzername" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Label Width="120" Content="Passwort:" VerticalAlignment="Center"/>
-				<TextBox Width="250" Text="{Binding Password, Mode=TwoWay}" PasswordChar="●"  PlaceholderText="Passwort" />
+				<TextBox Width="320" Text="{Binding Password, Mode=TwoWay}" PasswordChar="●"  PlaceholderText="Passwort" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<Button Content="Verbindung testen..." Width="250" Margin="130, 0, 0, 0" />
+				<Button Content="Verbindung testen..." Width="150" Margin="130, 0, 0, 0" 
+						Command="{Binding CheckConnectionCommand}"
+						IsEnabled="{Binding CanCheckConnection}" />
+				<Button Content="Speichern..." Width="150" Margin="10, 0, 0, 0" 
+						Command="{Binding SaveChangesCommand}"
+						IsEnabled="{Binding CanSaveChanges}" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Label Width="120" Content="Is Debug:" VerticalAlignment="Center"/>
 				<CheckBox Width="250" IsChecked="{Binding IsDebugMode, Mode=TwoWay}" />
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Spacing="10">
 			</StackPanel>
 
 			<!-- Weitere Einstellungen hier hinzufügen -->

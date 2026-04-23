@@ -1,0 +1,53 @@
+<ContentPage xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:de.openelp.regatta.ViewModels"
+			 xmlns:models="using:de.openelp.regatta.Models"
+			 mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="450"
+			 x:DataType="vm:PublicBoatViewModel"
+			 x:Class="de.openelp.regatta.PublicBoatView">
+	<StackPanel Margin="14" Spacing="10">
+		<TextBlock Text="Startliste" />
+		<StackPanel Orientation="Horizontal" Spacing="10">
+			<Label Width="120" Content="Rennen:" VerticalAlignment="Center"/>
+			<ComboBox Width="250" ItemsSource="{Binding Races}"
+					  DisplayMemberBinding="{Binding RaceTitle}"
+					  SelectedItem="{Binding SelectedRace}" PlaceholderText="Rennen auswählen..." />
+		</StackPanel>
+		<StackPanel Orientation="Horizontal" Spacing="10">
+			<Button Content="vorheriges Rennen" Width="200" />
+			<Button Content="nächstes Rennen" Width="200" />
+		</StackPanel>
+		<StackPanel Orientation="Horizontal" Spacing="10">
+			<DataGrid ItemsSource="{Binding Boats}" Width="800">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Number" Binding="{Binding Number}" Width="100"/>
+					<DataGridTemplateColumn Width="*" >
+						<DataGridTemplateColumn.Header>
+							<TextBlock Text="Boot" />
+						</DataGridTemplateColumn.Header>
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<StackPanel Orientation="Vertical" Spacing="5">
+									<StackPanel Orientation="Horizontal">
+										<Border BorderBrush="AliceBlue" Background="Azure" Padding="5" CornerRadius="5">
+											<TextBlock Text="{Binding TeamShort}" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" />
+										</Border>
+										<TextBlock Text="{Binding Team}" VerticalAlignment="Center" Padding="10" FontWeight="Bold"/>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<TextBlock Text="{Binding Athletes}" />
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<TextBlock Text="{Binding Cox}" />
+									</StackPanel>
+								</StackPanel>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				</DataGrid.Columns>
+			</DataGrid>
+		</StackPanel>
+	</StackPanel>
+</ContentPage>

@@ -1,5 +1,6 @@
 using System;
 using de.openelp.regatta.Interfaces;
+using de.openelp.regatta.Models;
 
 namespace de.openelp.regatta.Services;
 
@@ -9,6 +10,7 @@ namespace de.openelp.regatta.Services;
 public sealed class AppConfiguration : IAppConfiguration
 {
     private string _webApiBaseUrl = "https://regatta-test.grinch-tech.de";
+    private EventModel _eventModel;
 
     /// <summary>
     /// Gets the shared app-wide configuration instance.
@@ -35,7 +37,14 @@ public sealed class AppConfiguration : IAppConfiguration
     /// <summary>
     /// Gets or sets the currently selected event ID.
     /// </summary>
-    public int SelectedEventId { get; set; }
+    public int SelectedEventId
+    {
+        get
+        {
+            return _eventModel?.Id ?? 0;
+
+        }
+    }
 
     /// <summary>
     /// Gets or sets the username for authentication.
@@ -61,4 +70,23 @@ public sealed class AppConfiguration : IAppConfiguration
     /// Gets or sets the app theme (e.g., "Light", "Dark", "System").
     /// </summary>
     public string AppTheme { get; set; } = String.Empty;
+
+    /// <summary>
+    /// Gets or sets the selected event.
+    /// </summary>
+    /// <value>
+    /// The selected event.
+    /// </value>
+    public EventModel SelectedEvent
+    {
+        get
+        {
+            return _eventModel;
+        }
+        set
+        {
+            this._eventModel = value;
+        }
+    }
+
 }

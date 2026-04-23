@@ -119,7 +119,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: android-build
-        path: src/Android/bin/Release/net10.0-android/*-Signed.apk
+        path: src/Android/bin/Release/net10.0-android/*-Signed.aab
         retention-days: 7
 
   publish-desktop-release-assets:
@@ -166,6 +166,6 @@ jobs:
       with:
         serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
         packageName: de.openelp.regatta
-        releaseFiles: release-assets/**/*.apk
+        releaseFiles: release-assets/**/*.aab
         track: internal
 

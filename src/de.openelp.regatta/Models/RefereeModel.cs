@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace de.openelp.regatta.Models;
 
@@ -10,6 +11,7 @@ public class RefereeModel
     /// <summary>
     /// Gets or sets the referee ID
     /// </summary>
+    [JsonPropertyName("id")]
     public int? Id { get; set; }
 
     /// <summary>
