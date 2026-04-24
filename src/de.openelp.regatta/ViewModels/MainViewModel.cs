@@ -19,7 +19,7 @@ public partial class MainViewModel : ViewModelBase
     private bool _isDrawerOpened;
 
     [ObservableProperty]
-    private string _version = "Regatta App (c) " + Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";
+    private string _version = "Regatta App (c) " + Assembly.GetExecutingAssembly().GetName().Version?.ToString();
 
     public ObservableCollection<PageItem> Pages { get; } = new();
 
@@ -58,10 +58,11 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel()
     {
         Pages.Add(new PageItem("Home", () => new HomeView(), "M10,20 L30,20 L30,40 L10,40 Z"));
+        Pages.Add(new PageItem("Rennfolge", () => new PublicRaceView(), "M10,20 L30,20 L30,40 L10,40 Z"));
         Pages.Add(new PageItem("Boote", () => new PublicBoatView(), "M10,20 L30,20 L30,40 L10,40 Z"));
         Pages.Add(new PageItem("Wettkampfrichter", () => new RefereeDashboardView(), "M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z"));
         Pages.Add(new PageItem("Einstellungen", () => new SettingsPage(), "M10,20 L30,20 L30,40 L10,40 Z"));
 
-        NavigateTo(0);
+        this.SelectedPageIndex = 0;
     }
 }

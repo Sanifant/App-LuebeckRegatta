@@ -6,10 +6,10 @@
 			 xmlns:models="using:de.openelp.regatta.Models"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:SettingsViewModel"
-			 x:Class="de.openelp.regatta.Pages.SettingsPage">
+			 x:Class="de.openelp.regatta.Pages.SettingsPage"
+			 Header="Einstellungen">
 	<Grid>
 		<StackPanel Margin="14" Spacing="10">
-			<TextBlock Text="Einstellungen" FontSize="24" FontWeight="Bold"/>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Label Width="120" Content="Sprache:" VerticalAlignment="Center"/>
 				<ComboBox Width="320" PlaceholderText="Sprache auswählen..." IsEnabled="false">
@@ -27,7 +27,7 @@
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Label Width="120" Content="Webservice URL:" VerticalAlignment="Center"/>
-				<TextBox Width="320" Text="{Binding WebApiBaseUrl, Mode=TwoWay}"
+				<TextBox Width="320" Text="{Binding WebApiBaseUrl, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
 						 PlaceholderText="Webservice Url" />
 				<Rectangle Fill="{Binding UrlValid}" Width="20" Height="20" />
 			</StackPanel>

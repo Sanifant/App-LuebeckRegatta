@@ -68,6 +68,7 @@ public partial class App : Application
         collection.AddTransient<SettingsViewModel>();
         collection.AddTransient<HomeViewModel>();
         collection.AddTransient<PublicBoatViewModel>();
+        collection.AddTransient<PublicRaceViewModel>();
 
         Services = collection.BuildServiceProvider();
     }

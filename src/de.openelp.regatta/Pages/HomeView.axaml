@@ -4,14 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="de.openelp.regatta.Pages.HomeView"
-              xmlns:vm="using:de.openelp.regatta.ViewModels"
-              x:DataType="vm:HomeViewModel">
-  <StackPanel Margin="20">
-    <TextBlock Text="{Binding WelcomeMessage}" 
-      FontSize="24" 
-      FontWeight="Bold" 
-      Margin="0,0,0,20"/>
-    <TextBlock Text="Dies ist die Startseite der App. Hier finden Sie eine Übersicht über die neuesten Regatta-Nachrichten und -Aktualisierungen." 
-      TextWrapping="Wrap"/>
-  </StackPanel>
+             xmlns:vm="using:de.openelp.regatta.ViewModels"
+             x:DataType="vm:HomeViewModel">
+    <StackPanel Margin="20">
+        <TextBlock Text="{Binding WelcomeMessage}" 
+            FontSize="24" 
+            FontWeight="Bold" 
+            Margin="0,0,0,20"/>
+        <TextBlock Text="Dies ist die Startseite der App. Hier finden Sie eine Übersicht über die neuesten Regatta-Nachrichten und -Aktualisierungen." 
+            TextWrapping="Wrap"/>
+    </StackPanel>
 </ContentPage>

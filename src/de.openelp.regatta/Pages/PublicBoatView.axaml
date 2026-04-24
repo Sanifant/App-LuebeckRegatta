@@ -6,21 +6,34 @@
 			 xmlns:models="using:de.openelp.regatta.Models"
 			 mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="450"
 			 x:DataType="vm:PublicBoatViewModel"
-			 x:Class="de.openelp.regatta.PublicBoatView">
+			 x:Class="de.openelp.regatta.PublicBoatView"
+			 Header="Startliste">
+	<Design.DataContext>
+		<vm:PublicBoatViewModel />
+	</Design.DataContext>
 	<StackPanel Margin="14" Spacing="10">
-		<TextBlock Text="Startliste" />
-		<StackPanel Orientation="Horizontal" Spacing="10">
-			<Label Width="120" Content="Rennen:" VerticalAlignment="Center"/>
+		<TextBlock Text="Startliste" FontSize="25" FontWeight="Bold"/>
+		<StackPanel Orientation="Vertical" Spacing="10">
+			<Label Content="Rennen:" />
 			<ComboBox Width="250" ItemsSource="{Binding Races}"
-					  DisplayMemberBinding="{Binding RaceTitle}"
-					  SelectedItem="{Binding SelectedRace}" PlaceholderText="Rennen auswählen..." />
+					  SelectedItem="{Binding SelectedRace}" PlaceholderText="Rennen auswählen...">
+				<ComboBox.ItemTemplate>
+					<DataTemplate>	
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{Binding RaceNumber, StringFormat='[{0}]'}" />
+							<TextBlock Text="{Binding RaceTitle}" Padding="5,0,5,0" />
+							<TextBlock Text="{Binding RaceStartTime, StringFormat='({0:HH\\:mm})'}" />
+						</StackPanel>
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
 		</StackPanel>
 		<StackPanel Orientation="Horizontal" Spacing="10">
-			<Button Content="vorheriges Rennen" Width="200" />
-			<Button Content="nächstes Rennen" Width="200" />
+			<Button Content="vorheriges Rennen" Width="200"	Command="{Binding PreviousRaceCommand}" />
+			<Button Content="nächstes Rennen" Width="200" Command="{Binding NextRaceCommand}" />
 		</StackPanel>
 		<StackPanel Orientation="Horizontal" Spacing="10">
-			<DataGrid ItemsSource="{Binding Boats}" Width="800">
+			<DataGrid ItemsSource="{Binding Boats}" Width="800">	
 				<DataGrid.Columns>
 					<DataGridTextColumn Header="Number" Binding="{Binding Number}" Width="100"/>
 					<DataGridTemplateColumn Width="*" >
@@ -40,7 +53,7 @@
 										<TextBlock Text="{Binding Athletes}" />
 									</StackPanel>
 									<StackPanel Orientation="Horizontal">
-										<TextBlock Text="{Binding Cox}" />
+										<TextBlock Text="{Binding Cox, StringFormat='(Stm.) {0}'}" />
 									</StackPanel>
 								</StackPanel>
 							</DataTemplate>

@@ -1,0 +1,27 @@
+<ContentPage xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:de.openelp.regatta.ViewModels"
+			 xmlns:models="using:de.openelp.regatta.Models"
+			 mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="450"
+			 x:DataType="vm:PublicRaceViewModel"
+			 x:Class="de.openelp.regatta.PublicRaceView"
+			 Header="Rennfolge">
+		<ScrollViewer >
+			<DataGrid ItemsSource="{Binding Races}"
+			   GridLinesVisibility="All"
+			   BorderThickness="1" BorderBrush="Gray" >
+				<DataGrid.Styles>
+					<Style Selector="DataGrid /template/ScrollBar#PART_VerticalScrollbar">
+						<Setter Property="AllowAutoHide" Value="False"/>
+					</Style>
+				</DataGrid.Styles>
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Rennnummer" CanUserSort="True" Binding="{Binding RaceNumber}" Width="125"/>
+					<DataGridTextColumn Header="Bezeichnug" CanUserSort="True" Binding="{Binding RaceTitle}" MinWidth="250" />
+					<DataGridTextColumn Header="Startzeit" Binding="{Binding RaceStartTime, StringFormat='{}{0:HH\\:mm}'}" Width="100"/>
+				</DataGrid.Columns>
+			</DataGrid>
+		</ScrollViewer>
+</ContentPage>
