@@ -18,8 +18,21 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isDrawerOpened;
 
-    [ObservableProperty]
-    private string _version = "Regatta App (c) " + Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "unknown";
+    public string AppVersion => Assembly.GetExecutingAssembly()
+        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+        .InformationalVersion ?? "1.0.0";
+
+    public string? Copyright => Assembly.GetExecutingAssembly()
+        .GetCustomAttribute<AssemblyCopyrightAttribute>()?
+        .Copyright;
+
+    public string? Description => Assembly.GetExecutingAssembly()
+        .GetCustomAttribute<AssemblyDescriptionAttribute>()?
+        .Description;
+
+    public string? ProductTitle => Assembly.GetExecutingAssembly()
+        .GetCustomAttribute<AssemblyProductAttribute>()?
+        .Product;
 
     public ObservableCollection<PageItem> Pages { get; } = new();
 

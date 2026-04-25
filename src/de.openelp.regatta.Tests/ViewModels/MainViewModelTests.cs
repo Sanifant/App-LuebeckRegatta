@@ -57,7 +57,7 @@ public class MainViewModelTests
         var viewModel = new MainViewModel();
 
         // Act
-        var version = viewModel.Version;
+        var version = viewModel.AppVersion;
 
         // Assert
         Assert.NotNull(version);
