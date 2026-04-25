@@ -24,7 +24,9 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '10.0.x'
+        dotnet-version: |
+          10.0.x
+          8.0.x
 
     - name: Install Android Workload
       # Wichtig, falls die Tests Referenzen auf das Android-Projekt haben
@@ -195,6 +197,6 @@ jobs:
       with:
         serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
         packageName: de.openelp.regatta
-        releaseFiles: release-assets/**/*.aab
+        releaseFiles: release-assets/**/*-Signed.aab
         track: internal
 
