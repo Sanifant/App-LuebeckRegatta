@@ -15,7 +15,7 @@ public interface IAppConfiguration
     /// <summary>
     /// Gets or sets the currently selected event ID.
     /// </summary>
-    int SelectedEventId { get; }
+    int SelectedEventId { get; set; }
 
     /// <summary>
     /// Gets or sets the username of the currently logged-in user (if applicable).
@@ -49,4 +49,5 @@ public interface IAppConfiguration
     /// The selected event.
     /// </value>
     EventModel SelectedEvent { get; set; }
+    UserDto? User { get; }
 }

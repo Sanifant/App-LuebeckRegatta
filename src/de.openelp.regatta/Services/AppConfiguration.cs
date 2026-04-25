@@ -1,6 +1,8 @@
-using System;
 using de.openelp.regatta.Interfaces;
 using de.openelp.regatta.Models;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.ObjectModel;
 
 namespace de.openelp.regatta.Services;
 
@@ -10,7 +12,9 @@ namespace de.openelp.regatta.Services;
 public sealed class AppConfiguration : IAppConfiguration
 {
     private string _webApiBaseUrl = "https://regatta-test.grinch-tech.de";
-    private EventModel _eventModel;
+    private EventModel? _eventModel;
+    private int selectedEventId = -1;
+    private UserDto? _user;
 
     /// <summary>
     /// Gets the shared app-wide configuration instance.
@@ -41,8 +45,11 @@ public sealed class AppConfiguration : IAppConfiguration
     {
         get
         {
-            return _eventModel?.Id ?? 0;
-
+            return selectedEventId;
+        }
+        set
+        {
+            selectedEventId = value;
         }
     }
 
@@ -81,12 +88,49 @@ public sealed class AppConfiguration : IAppConfiguration
     {
         get
         {
+            if(_eventModel == null && selectedEventId != -1)
+            { 
+                var apiService = App.Services.GetService<IEventApiService>();
+                if (apiService != null)
+                {
+                    _eventModel = apiService.GetEventAsync(selectedEventId).Result;
+                }
+            }
             return _eventModel;
         }
         set
         {
             this._eventModel = value;
+            this.selectedEventId = value.Id;
         }
     }
 
+    public UserDto? User
+    {
+        get
+        {
+            if (_user == null)
+            {
+                if (string.IsNullOrWhiteSpace(this.UserName) && string.IsNullOrWhiteSpace(this.Password))
+                {
+                    return null;
+                }
+
+                var _authApiService = App.Services.GetService<IAuthApiService>();
+
+                _authApiService.LoginAsync(new LoginRequestDto() { Username = this.UserName, Password = this.Password })
+                    .ContinueWith(task =>
+                    {
+
+                        if (task.IsCompletedSuccessfully)
+                        {
+
+                            this._user = task.Result;
+                        }
+                    });
+            }
+
+            return _user;
+        }
+    }
 }

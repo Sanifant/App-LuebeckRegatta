@@ -3,9 +3,7 @@ using de.openelp.regatta.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,5 +41,11 @@ public class EventApiService : IEventApiService
     public async Task<EventModel?> GetEventAsync(int eventId, CancellationToken ct = default)
     {
         return await _httpClient.GetFromJsonAsync<EventModel>($"/api/{eventId}/Event", ct);
+    }
+
+    /// <inheritdoc />
+    public async Task<EventModel?> GetEventByNameAsync(string eventName, CancellationToken ct = default)
+    {
+        return await _httpClient.GetFromJsonAsync<EventModel>($"/api/EventByName/{Uri.EscapeDataString(eventName)}", ct);
     }
 }

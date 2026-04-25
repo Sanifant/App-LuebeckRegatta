@@ -44,7 +44,7 @@
 					SelectedIndex="{Binding SelectedPageIndex}">
 				<ListBox.ItemTemplate>
 					<DataTemplate x:DataType="model:PageItem">
-						<Grid ColumnDefinitions="20,*">
+						<Grid ColumnDefinitions="20,*" IsVisible="{Binding IsVisible}" >
 							<PathIcon Grid.Column="0" Width="16" Height="16"
 										HorizontalAlignment="Center"
 										VerticalAlignment="Center"
@@ -61,9 +61,9 @@
 	</DrawerPage.DrawerTemplate>
 	<DrawerPage.DrawerHeaderTemplate>
 		<DataTemplate x:DataType="vm:MainViewModel">
-			<DockPanel LastChildFill="True" Margin="6"
+			<DockPanel LastChildFill="True" Margin="6">
+				<Border HorizontalAlignment="Stretch" Padding="10"
 					IsVisible="{Binding IsDrawerOpened}">
-				<Border HorizontalAlignment="Stretch" Padding="10">
 					<Image Source="/Assets/lrvLogo.png" VerticalAlignment="Center"
 							HorizontalAlignment="Center"
 							MaxHeight="120"

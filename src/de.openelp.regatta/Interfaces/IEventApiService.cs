@@ -24,4 +24,12 @@ public interface IEventApiService
     /// <param name="ct">Cancellation token.</param>
     /// <returns>The event, or <c>null</c> if it was not found or loading failed.</returns>
     Task<EventModel?> GetEventAsync(int eventId, CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets a single event by its name.
+    /// </summary>
+    /// <param name="eventName">The event name.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>The event, or <c>null</c> if it was not found or loading failed.</returns>
+    Task<EventModel?> GetEventByNameAsync(string eventName, CancellationToken ct = default);
 }

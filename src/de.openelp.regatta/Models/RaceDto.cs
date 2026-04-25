@@ -11,12 +11,11 @@ public class RaceDto
     /// <summary>
     /// Gets or sets the race identifier.
     /// </summary>
-    public int RaceId { get; set; } = 1175;
+    public int RaceId { get; set; }
 
     /// <summary>
     /// Gets or sets the race number.
     /// </summary>
-    [JsonPropertyName("raceNUmber")]
     public string? RaceNumber { get; set; }
 
     /// <summary>

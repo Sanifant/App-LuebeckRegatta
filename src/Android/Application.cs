@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Runtime;
+using Android.Service.Settings.Preferences;
 using Avalonia;
 using Avalonia.Android;
+using Java.Util.Prefs;
 
 namespace de.openelp.regatta.android;
 
@@ -21,4 +23,6 @@ public class Application : AvaloniaAndroidApplication<App>
     {
         return base.CustomizeAppBuilder(builder);
     }
+
+    
 }

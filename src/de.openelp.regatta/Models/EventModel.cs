@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace de.openelp.regatta.Models;
@@ -16,8 +17,9 @@ public class EventModel
     /// <summary>
     /// Gets or sets the event identifier.
     /// </summary>
+    [Required]
     [JsonPropertyName("ID")]
-    public int? Id { get; set; }
+    public int Id { get; set; }
 
     /// <summary>
     /// Gets or sets the event end date.

@@ -62,6 +62,7 @@ public partial class App : Application
         collection.AddSingleton<IRaceHeatApiService, RaceHeatApiService>();
         collection.AddSingleton<IRaceApiService, RaceApiService>();
         collection.AddSingleton<IBoatApiService, BoatApiService>();
+        collection.AddSingleton<IAuthApiService, AuthApiService>();
 
         collection.AddTransient<MainViewModel>();
         collection.AddTransient<RefereeDashboardViewModel>();
