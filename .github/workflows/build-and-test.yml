@@ -106,17 +106,26 @@ jobs:
       run: |
         echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > ${{ github.workspace }}/release.keystore
 
+    - name: Extract Version from Tag
+      id: get_version
+      run: |
+        VERSION=${GITHUB_REF_NAME#v}
+        echo "VERSION_NAME=$VERSION" >> $GITHUB_OUTPUT
+        echo "VERSION_CODE=${{ github.run_number }}" >> $GITHUB_OUTPUT
+
     - name: Build and Sign Android Project
-      run: >
-        dotnet publish src/Android/Android.csproj `
-          -c Release `
-          -f net10.0-android `
-          -p:AndroidPackageFormat=aab `
-          -p:AndroidKeyStore=true `
-          -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore `
-          -p:AndroidSigningKeyAlias=${{ secrets.KEY_ALIAS }} `
-          -p:AndroidSigningKeyPass=${{ secrets.KEY_PASSWORD }} `
-          -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_PASSWORD }} `
+      run: |
+        dotnet publish src/Android/Android.csproj \
+          -c Release \
+          -f net10.0-android \
+          -p:AndroidPackageFormat=aab \
+          -p:AndroidKeyStore=true \
+          -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore \
+          -p:AndroidSigningKeyAlias=${{ secrets.KEY_ALIAS }} \
+          -p:AndroidSigningKeyPass=${{ secrets.KEY_PASSWORD }} \
+          -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_PASSWORD }} \
+          -p:ApplicationVersion=${{ steps.get_version.outputs.VERSION_CODE }} \
+          -p:ApplicationDisplayVersion=${{ steps.get_version.outputs.VERSION_NAME }} \
           -o ./publish/android
 
     - name: Upload Android Artifacts
