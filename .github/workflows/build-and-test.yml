@@ -137,8 +137,8 @@ jobs:
           -p:AndroidSigningKeyAlias=${{ secrets.KEY_ALIAS }} \
           -p:AndroidSigningKeyPass=${{ secrets.KEY_PASSWORD }} \
           -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_PASSWORD }} \
-          -p:ApplicationVersion=${GITHUB_REF_NAME#v} \
-          -p:ApplicationDisplayVersion="1.0.${{ github.run_number }}" \
+          -p:ApplicationVersion=${{ steps.get_version.outputs.VERSION_CODE }} \
+          -p:ApplicationDisplayVersion="${{ steps.get_version.outputs.VERSION_NAME }}" \
           -o ./publish/android
 
         # 2. Erzeuge die APK für manuelles Testen
