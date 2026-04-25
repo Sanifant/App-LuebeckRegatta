@@ -9,6 +9,40 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <PackAsTool>false</PackAsTool>
+        <PackageId>de.openelp.regatta</PackageId>
+        <Product>Lübeck Regatta Management</Product>
+        <Title>Regatta App Lübeck</Title>
+        <Authors>Stefan Petersen; Lübecker Regattaverein</Authors>
+        <Company>OpenELP Project</Company>
+        <Copyright>Copyright © 2026 OpenELP</Copyright>
+        <Description>Eine professionelle Software zur Verwaltung und Auswertung von Ruderregatten.</Description>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>de.openelp.regatta</PackageId>
+        
+        <PackageProjectUrl>https://github.com/Sanifant/App-LuebeckRegatta</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Sanifant/App-LuebeckRegatta.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        
+        <ApplicationIcon>icon.ico</ApplicationIcon>
+    </PropertyGroup>
+
+
+    <PropertyGroup>
+        <PackageReleaseNotes>Initial release for the 2026 season.</PackageReleaseNotes>
+        <RuntimeIdentifiers>linux-x64;win-x64</RuntimeIdentifiers>
+    </PropertyGroup>
+    
+    <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
+        <Content Include="Assets/icon.png">
+            <Pack>true</Pack>
+            <PackagePath>usr/share/icons/hicolor/256x256/apps/de.openelp.regatta.png</PackagePath>
+        </Content>
+    </ItemGroup>
+
+    <PropertyGroup>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
 
