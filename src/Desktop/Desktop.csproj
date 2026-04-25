@@ -9,6 +9,24 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <PackAsTool>false</PackAsTool>   
+        <ApplicationIcon>Assets/lrv-logo.ico</ApplicationIcon>
+    </PropertyGroup>
+
+
+    <PropertyGroup>
+        <PackageReleaseNotes>Initial release for the 2026 season.</PackageReleaseNotes>
+        <RuntimeIdentifiers>linux-x64;win-x64</RuntimeIdentifiers>
+    </PropertyGroup>
+    
+    <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
+        <Content Include="Assets/lrv-logo.png">
+            <Pack>true</Pack>
+            <PackagePath>usr/share/icons/hicolor/256x256/apps/de.openelp.regatta.png</PackagePath>
+        </Content>
+    </ItemGroup>
+
+    <PropertyGroup>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
 

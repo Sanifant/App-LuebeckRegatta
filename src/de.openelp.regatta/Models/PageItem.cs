@@ -7,8 +7,9 @@ namespace de.openelp.regatta.Models
     /// <summary>
     /// Represents a page entry with a header, content factory, and optional icon data.
     /// </summary>
-    public class PageItem(string header, Func<object> factory, string? iconData = null)
+    public class PageItem(string header, Func<object> factory, string? iconData = null, Func<bool>? isVisible = null)
     {
+        private Func<bool> _isVisible = isVisible ?? (() => true);
         /// <summary>
         /// Gets the header.
         /// </summary>
@@ -39,6 +40,6 @@ namespace de.openelp.regatta.Models
         /// <value>
         ///   <c>true</c> if this <see cref="PageItem"/> is visible; otherwise, <c>false</c>.
         /// </value>
-        public bool IsVisible { get; set; } = true;
+        public bool IsVisible { get => _isVisible(); }
     }
 }

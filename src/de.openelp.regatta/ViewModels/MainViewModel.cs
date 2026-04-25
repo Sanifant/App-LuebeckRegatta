@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Input;
 
 namespace de.openelp.regatta.ViewModels;
 
@@ -52,10 +53,11 @@ public partial class MainViewModel : ViewModelBase
 
     private Task NavigateTo(int pageIndex)
     {
-        if (pageIndex < 0 || pageIndex >= Pages.Count || Navigator is null)
+        if (pageIndex < -1 || pageIndex >= Pages.Count || Navigator is null)
             return Task.CompletedTask;
 
-        var item = Pages[pageIndex];
+        var settingsPage = new PageItem("Einstellungen", () => new SettingsPage());
+        var item = pageIndex == -1 ? settingsPage : Pages[pageIndex];
 
         if (item != null)
         {
@@ -68,12 +70,20 @@ public partial class MainViewModel : ViewModelBase
         return Task.CompletedTask;
     }
 
+    [RelayCommand]
+    public Task OpenSettings()
+    {
+        this.SelectedPageIndex = -1;
+
+        return Task.CompletedTask; 
+    }
+
     public MainViewModel()
     {
-        Pages.Add(new PageItem("Home", () => new HomeView(), "M10,20 L30,20 L30,40 L10,40 Z"));
-        Pages.Add(new PageItem("Wettkampfrichter", () => new RefereeDashboardView(), "M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z"));
-        Pages.Add(new PageItem("Einstellungen", () => new SettingsPage(), "M10,20 L30,20 L30,40 L10,40 Z"));
-
-        NavigateTo(0);
+        Pages.Add(new PageItem("Home", () => new HomeView(), Icons.Bell));
+        Pages.Add(new PageItem("Rennfolge", () => new PublicRaceView(), Icons.Clock));
+        Pages.Add(new PageItem("Boote", () => new PublicBoatView(), Icons.Monitor));
+        Pages.Add(new PageItem("Wettkampfrichter", () => new RefereeDashboardView(), Icons.Navigation, () => false));
+        this.SelectedPageIndex = 0;
     }
 }

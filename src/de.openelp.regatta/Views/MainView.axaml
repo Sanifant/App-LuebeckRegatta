@@ -4,15 +4,18 @@
 			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			xmlns:vm="using:de.openelp.regatta.ViewModels"
+			xmlns:view="using:de.openelp.regatta.Views"
+			xmlns:pages="using:de.openelp.regatta.Pages"
 			xmlns:model="using:de.openelp.regatta.Models"
 			mc:Ignorable="d"
 			d:DesignWidth="800"
 			d:DesignHeight="450"
 			x:DataType="vm:MainViewModel"
-			DrawerLayoutBehavior="Split"
+			DrawerLayoutBehavior="CompactInline"
 			IsOpen="{Binding IsDrawerOpened, Mode=TwoWay}"
 			DrawerLength="260"
-			CompactDrawerLength="52"
+			CompactDrawerLength="40"
+			Header="Hallo Welt"
 			DrawerFooter="{Binding}"
 			Drawer="{Binding}"
 			DrawerHeader="{Binding}">
@@ -27,23 +30,17 @@
 			<Thickness x:Key="TabbedPageTabStripPadding">10</Thickness>
 		</ResourceDictionary>
 	</DrawerPage.Resources>
-	<DrawerPage.Styles>
-		<Style Selector="TextBlock.h2">
-			<Setter Property="TextWrapping" Value="Wrap" />
-			<Setter Property="MaxWidth" Value="400" />
-			<Setter Property="HorizontalAlignment" Value="Left" />
-		</Style>
-	</DrawerPage.Styles>
 	<DrawerPage.DrawerTemplate>
 		<DataTemplate x:DataType="vm:MainViewModel">
 			<ListBox ItemsSource="{Binding Pages}"
 					Padding="0,10,0,10"
 					Background="Transparent"
 					ItemContainerTheme="{StaticResource NavHeaderItem}"
-					SelectedIndex="{Binding SelectedPageIndex}">
+					SelectedIndex="{Binding SelectedPageIndex, Mode=TwoWay}">
 				<ListBox.ItemTemplate>
 					<DataTemplate x:DataType="model:PageItem">
-						<Grid ColumnDefinitions="20,*">
+						<Grid ColumnDefinitions="20,*" IsVisible="{Binding IsVisible}" 
+							  IsEnabled="{Binding IsVisible}">
 							<PathIcon Grid.Column="0" Width="16" Height="16"
 										HorizontalAlignment="Center"
 										VerticalAlignment="Center"
@@ -60,33 +57,53 @@
 	</DrawerPage.DrawerTemplate>
 	<DrawerPage.DrawerHeaderTemplate>
 		<DataTemplate x:DataType="vm:MainViewModel">
-			<StackPanel>
-				<Border HorizontalAlignment="Stretch" Padding="10">
+			<StackPanel MinHeight="40">
+				<Border HorizontalAlignment="Stretch" Padding="10" IsVisible="{Binding IsDrawerOpened}" >
 					<Image Source="/Assets/lrvLogo.png" VerticalAlignment="Center"
 							HorizontalAlignment="Center"
 							MaxHeight="120"
 							Stretch="Uniform"/>
 				</Border>
-				<TextBlock Text="{Binding ProductTitle}" FontSize="24" FontWeight="Bold"/>
-				<TextBlock Text="{Binding Description}" TextWrapping="Wrap"/>
+				<TextBlock Text="{Binding ProductTitle}" 
+						   FontSize="16"
+						   Width="260"
+						   TextAlignment="Center"
+						   FontWeight="Bold"
+						   IsVisible="{Binding IsDrawerOpened}" />
 			</StackPanel>
 		</DataTemplate>
 	</DrawerPage.DrawerHeaderTemplate>
 	<DrawerPage.DrawerFooterTemplate>
 		<DataTemplate x:DataType="vm:MainViewModel">
-			<StackPanel>
-				<TextBlock Text="{Binding AppVersion}"	
-					HorizontalAlignment="Center"
-					Margin="0,10" />
+			<StackPanel IsVisible="{Binding IsDrawerOpened}" >
+				<Button Padding="0,10,0,10" 
+						Width="260"
+						Background="Transparent"
+						Command="{Binding OpenSettingsCommand}"
+						Theme="{StaticResource NavHeaderItem}">
+					<StackPanel >
+						<Grid ColumnDefinitions="40,*">
+							<PathIcon Grid.Column="0" Width="16" Height="16"
+										HorizontalAlignment="Center"
+										VerticalAlignment="Center"
+										Data="{StaticResource settings_regular}"/>
+							<TextBlock Grid.Column="1" Text="Settings"
+										VerticalAlignment="Center"
+										TextTrimming="CharacterEllipsis"/>
+						</Grid>
+					</StackPanel>
+				</Button>
 				<TextBlock Text="{Binding AppVersion, StringFormat='Version: {0}'}"	
 					HorizontalAlignment="Center"
 					Margin="0,10" />
 				<TextBlock Text="{Binding Copyright}" FontSize="12" Foreground="Gray"	
 					HorizontalAlignment="Center"
 					Margin="0,10" />
-			</StackPanel>
-		</DataTemplate>
+				</StackPanel>
+			</DataTemplate>
 	</DrawerPage.DrawerFooterTemplate>
-	<NavigationPage Name="NavPage"/>
+	<NavigationPage Name="NavPage">
+		<pages:HomeView />
+	</NavigationPage>
 </DrawerPage>
 

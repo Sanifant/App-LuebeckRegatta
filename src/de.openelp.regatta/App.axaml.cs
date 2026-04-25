@@ -21,7 +21,6 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        var collection = new ServiceCollection();
 
         var appConfiguration = AppConfiguration.Current;
         var webApiBaseUrlOverride = Environment.GetEnvironmentVariable("REGATTA_WEB_API_BASE_URL");
@@ -30,19 +29,7 @@ public partial class App : Application
             appConfiguration.WebApiBaseUrl = webApiBaseUrlOverride;
         }
 
-#if DEBUG
-        appConfiguration.IsDebugMode = true;
-#endif
-
-        collection.AddSingleton<IAppConfiguration>(appConfiguration);
-        collection.AddSingleton<IRaceHeatApiClient, RaceHeatApiClient>();
-        collection.AddTransient<MainViewModel>();
-        collection.AddTransient<RefereeDashboardViewModel>();
-        collection.AddTransient<SettingsViewModel>();
-        collection.AddTransient<HomeViewModel>();
-
-        // Creates a ServiceProvider containing services from the provided IServiceCollection
-        Services = collection.BuildServiceProvider();
+        ReloadServices();
 
         var vm = Services.GetRequiredService<MainViewModel>();
 
@@ -62,5 +49,28 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    public void ReloadServices()
+    {
+        var collection = new ServiceCollection();
+        var appConfiguration = AppConfiguration.Current;
+        collection.AddSingleton<IAppConfiguration>(appConfiguration);
+
+        collection.AddSingleton<IEventApiService, EventApiService>();
+        collection.AddSingleton<IRefereeApiService, RefereeApiService>();
+        collection.AddSingleton<IRaceHeatApiService, RaceHeatApiService>();
+        collection.AddSingleton<IRaceApiService, RaceApiService>();
+        collection.AddSingleton<IBoatApiService, BoatApiService>();
+        collection.AddSingleton<IAuthApiService, AuthApiService>();
+
+        collection.AddTransient<MainViewModel>();
+        collection.AddTransient<RefereeDashboardViewModel>();
+        collection.AddTransient<SettingsViewModel>();
+        collection.AddTransient<HomeViewModel>();
+        collection.AddTransient<PublicBoatViewModel>();
+        collection.AddTransient<PublicRaceViewModel>();
+
+        Services = collection.BuildServiceProvider();
     }
 }

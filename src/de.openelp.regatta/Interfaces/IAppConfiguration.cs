@@ -1,3 +1,5 @@
+using de.openelp.regatta.Models;
+
 namespace de.openelp.regatta.Interfaces;
 
 /// <summary>
@@ -39,4 +41,13 @@ public interface IAppConfiguration
     /// Gets or sets the app's current theme (e.g., "Light", "Dark
     /// </summary>
     string AppTheme { get; set; }
+
+    /// <summary>
+    /// Gets or sets the selected event.
+    /// </summary>
+    /// <value>
+    /// The selected event.
+    /// </value>
+    EventModel SelectedEvent { get; set; }
+    UserDto? User { get; }
 }

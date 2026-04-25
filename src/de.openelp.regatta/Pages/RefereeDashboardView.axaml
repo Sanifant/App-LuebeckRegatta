@@ -8,20 +8,12 @@
 	mc:Ignorable="d"
 	d:DesignWidth="1280" d:DesignHeight="800"
 	x:Class="de.openelp.regatta.Pages.RefereeDashboardView"
-	x:DataType="vm:RefereeDashboardViewModel">
+	x:DataType="vm:RefereeDashboardViewModel"
+	Header="SCHIEDSRICHTER-ANSICHT">
+     <ContentPage.TopCommandBar>
+		<TextBlock Text="{Binding ClockText}"/>
+    </ContentPage.TopCommandBar>
 	<Grid ColumnDefinitions="240, *" RowDefinitions="Auto, *">
-		<!-- Top Bar -->
-		<Border Grid.ColumnSpan="2" Margin="14,14,14,10">
-			<DockPanel LastChildFill="True">
-				<TextBlock DockPanel.Dock="Left" Text="LÜBECK REGATTA • SCHIEDSRICHTER-ANSICHT" />
-				<StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="10">
-					<TextBlock Text="Wettkampfrichter:" VerticalAlignment="Center"/>
-
-					<TextBlock Text="{Binding ClockText}"/>
-				</StackPanel>
-			</DockPanel>
-		</Border>
-
 		<!-- LCARS Sidebar -->
 		<StackPanel Grid.Row="1" Grid.Column="0" Margin="14,0,10,14" Spacing="10">
 			<Border>

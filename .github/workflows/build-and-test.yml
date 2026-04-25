@@ -19,61 +19,92 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v4 # v4 ist aktuell die stabilste Version
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '10.0.x'
+        dotnet-version: |
+          10.0.x
+          8.0.x
+
+    - name: Install Android Workload
+      # Wichtig, falls die Tests Referenzen auf das Android-Projekt haben
+      run: dotnet workload install android
 
     - name: Restore Test Project
-      run: dotnet restore src/de.openelp.regatta.Tests/de.openelp.regatta.Tests.csproj --no-cache
+      # Wir restoren die gesamte Solution oder das spezifische Projekt
+      run: dotnet restore src/de.openelp.regatta.Tests/de.openelp.regatta.Tests.csproj
 
     - name: Run xUnit Tests
-      run: dotnet test src/de.openelp.regatta.Tests/de.openelp.regatta.Tests.csproj -c Release --no-restore --logger trx
+      # Wir entfernen --no-restore zur Sicherheit und definieren den Output-Pfad
+      run: |
+        dotnet test src/de.openelp.regatta.Tests/de.openelp.regatta.Tests.csproj \
+          -c Release \
+          --logger "trx;LogFileName=test_results.trx" \
+          --results-directory ./TestResults
 
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-results
-        path: '**/TestResults/**'
+        path: ./TestResults/*.trx
         retention-days: 7
 
-  build-desktop:
+build-desktop:
     name: Build Desktop (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     needs: [test]
     if: github.event_name == 'release' && github.event.action == 'created'
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v4
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
 
-    - name: Clear NuGet Caches
-      run: dotnet nuget locals all --clear
+    - name: Extract Version
+      id: get_version
+      shell: bash
+      run: |
+        VERSION=${GITHUB_REF_NAME#v}
+        echo "VERSION_NAME=$VERSION" >> $GITHUB_OUTPUT
+        echo "VERSION_FULL=$VERSION.${{ github.run_number }}" >> $GITHUB_OUTPUT
 
-    - name: Restore Desktop Project
-      run: dotnet restore src/Desktop/Desktop.csproj --no-cache
+    - name: Publish Desktop (Self-Contained)
+      # Wir publishen "Self-Contained", damit der User kein .NET installieren muss
+      run: |
+        dotnet publish src/Desktop/Desktop.csproj -c Release \
+          -r ${{ matrix.os == 'windows-latest' && 'win-x64' || 'linux-x64' }} \
+          --self-contained true \
+          -p:PublishSingleFile=true \
+          -p:Version=${{ steps.get_version.outputs.VERSION_FULL }} \
+          -o ./publish/app
 
-    - name: Build Desktop Project
-      run: dotnet build src/Desktop/Desktop.csproj -c Release --no-restore
+    - name: Create Windows MSI
+      if: matrix.os == 'windows-latest'
+      run: |
+        dotnet tool install --global dotnet-wix
+        dotnet wix src/Desktop/Desktop.csproj -c Release -o ./publish/installers/RegattaSetup.msi
 
-    - name: Upload Desktop Artifacts
+    - name: Create Linux DEB
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        dotnet tool install --global dotnet-deb
+        dotnet deb src/Desktop/Desktop.csproj -c Release -o ./publish/installers/regatta.deb
+
+    - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: desktop-build-${{ matrix.os }}
-        path: src/Desktop/bin/Release/net10.0/**
-        retention-days: 7
+        name: installers-${{ matrix.os }}
+        path: ./publish/installers/*
 
   build-android:
     name: Build Android
@@ -106,20 +137,48 @@ jobs:
       run: |
         echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > ${{ github.workspace }}/release.keystore
 
-    - name: Build and Sign Android Project
-      run: >
-        dotnet build src/Android/Android.csproj -c Release --no-restore
-        -p:AndroidKeyStore=true
-        -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore
-        -p:AndroidSigningKeyAlias=${{ secrets.KEY_ALIAS }}
-        -p:AndroidSigningKeyPass=${{ secrets.KEY_PASSWORD }}
-        -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_PASSWORD }}
+    - name: Extract Version from Tag
+      id: get_version
+      run: |
+        VERSION=${GITHUB_REF_NAME#v}
+        echo "GITHUB_REF_NAME=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+        echo "VERSION_NAME=$VERSION" >> $GITHUB_OUTPUT
+        echo "VERSION_CODE=${{ github.run_number }}" >> $GITHUB_OUTPUT
+
+    - name: Build Android (AAB and APK)
+      run: |
+        # 1. Erzeuge das AAB für den Play Store
+        dotnet publish src/Android/Android.csproj \
+          -c Release -f net10.0-android \
+          -p:AndroidPackageFormat=aab \
+          -p:AndroidKeyStore=true \
+          -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore \
+          -p:AndroidSigningKeyAlias=${{ secrets.KEY_ALIAS }} \
+          -p:AndroidSigningKeyPass=${{ secrets.KEY_PASSWORD }} \
+          -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_PASSWORD }} \
+          -p:ApplicationVersion=${{ steps.get_version.outputs.VERSION_CODE }} \
+          -p:ApplicationDisplayVersion="${{ steps.get_version.outputs.VERSION_NAME }}" \
+          -o ./publish/android
+
+        # 2. Erzeuge die APK für manuelles Testen
+        dotnet publish src/Android/Android.csproj \
+          -c Release -f net10.0-android \
+          -p:AndroidPackageFormat=apk \
+          -p:AndroidKeyStore=true \
+          -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore \
+          -p:AndroidSigningKeyAlias=${{ secrets.KEY_ALIAS }} \
+          -p:AndroidSigningKeyPass=${{ secrets.KEY_PASSWORD }} \
+          -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_PASSWORD }} \
+          -p:ApplicationVersion=${{ steps.get_version.outputs.VERSION_CODE }} \
+          -p:ApplicationDisplayVersion="${{ steps.get_version.outputs.VERSION_NAME }}" \
+          -o ./publish/android/apk
 
     - name: Upload Android Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: android-build
-        path: src/Android/bin/Release/net10.0-android/*-Signed.apk
+        name: android-app
+        path: ./publish/android/*.aab
+        if-no-files-found: warn
         retention-days: 7
 
   publish-desktop-release-assets:
@@ -143,10 +202,13 @@ jobs:
           (cd "$dir" && zip -r "../${name}.zip" .)
         done
 
-    - name: Upload Desktop Assets to Release
+- name: Upload Desktop Assets to Release
       uses: softprops/action-gh-release@v2
       with:
-        files: release-assets/*.zip
+        files: |
+          release-assets/**/*.msi
+          release-assets/**/*.deb
+          release-assets/**/*.zip
 
   publish-android-release-assets:
     name: Publish Android to Play Store
@@ -158,14 +220,20 @@ jobs:
     - name: Download Android Artifacts
       uses: actions/download-artifact@v4
       with:
-        pattern: android-build
+        pattern: android-app
         path: release-assets
+        
+    - name: Upload Android Assets to Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: release-assets/**/*.apk
 
     - name: Publish to Google Play Store
       uses: r0adkll/upload-google-play@v1
       with:
         serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
         packageName: de.openelp.regatta
-        releaseFiles: release-assets/**/*.apk
+        releaseFiles: release-assets/**/*-Signed.aab
         track: internal
+        status: draft
 
