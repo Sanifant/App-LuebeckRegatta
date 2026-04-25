@@ -15,7 +15,8 @@ namespace de.openelp.regatta.ViewModels;
 
 public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
 {
-    private readonly IRaceHeatApiClient _api;
+    private readonly IRefereeApiService refereeApi;
+    private readonly IRaceHeatApiService raceHeatApi;
     private readonly IAppConfiguration _configuration;
 
     private readonly Timer _clockTimer;
@@ -27,17 +28,18 @@ public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
     private string _statusText = "";
     private string _clockText = "";
 
-    public RefereeDashboardViewModel(IRaceHeatApiClient api, IAppConfiguration? configuration = null)
+    public RefereeDashboardViewModel(IRefereeApiService refereeApi, IRaceHeatApiService raceHeatApi, IAppConfiguration? configuration = null)
     {
-        _api = api ?? throw new ArgumentNullException(nameof(api));
+        this.refereeApi = refereeApi ?? throw new ArgumentNullException(nameof(refereeApi));
+        this.raceHeatApi = raceHeatApi ?? throw new ArgumentNullException(nameof(raceHeatApi));
         _configuration = configuration ?? AppConfiguration.Current;
 
         Heats = new ObservableCollection<RaceHeatModel>();
         SelectedHeatEntries = new ObservableCollection<HeatEntryTileViewModel>();
 
-        Referees = new ObservableCollection<RefereeModel>(); // kommt bei euch vermutlich aus eigenem Endpoint/Storage
+        Referees = new ObservableCollection<RefereeModel>();
 
-        EventId = _configuration.SelectedEventId;
+        _eventId = _configuration.SelectedEventId;
 
         _clockTimer = new Timer(_ =>
         {
@@ -102,13 +104,6 @@ public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
     public int EventId
     {
         get => _eventId;
-        set
-        {
-            if (_eventId == value) return;
-            _eventId = value;
-            _configuration.SelectedEventId = value;
-            OnPropertyChanged();
-        }
     }
 
     public RefereeModel? SelectedReferee
@@ -167,13 +162,13 @@ public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
 
     public async Task InitializeAsync(int eventId, CancellationToken ct = default)
     {
-        EventId = eventId;
+        _eventId = eventId;
         await RefreshAsync(ct);
     }
 
     private async Task RefreshAsync(CancellationToken ct)
     {
-        var heats = await _api.GetHeatsAsync(EventId, ct);
+        var heats = await raceHeatApi.GetRaceHeatsAsync(EventId, ct);
 
         // optional: nur Running wie in RefereeView.java
         var running = heats.Where(h => string.Equals(h.Status, "Running", StringComparison.OrdinalIgnoreCase)).ToList();
@@ -197,7 +192,7 @@ public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
 
         // Controller: GET /{eventId}/RaceHeat/{raceId} filtert nach RACE_HEAT.ID,
         // daher verwenden wir HeatID (nicht Race.Id).
-        var details = await _api.GetHeatDetailsAsync(EventId, SelectedHeat.HeatID.Value, ct);
+        var details = await raceHeatApi.GetRaceHeatAsync(EventId, SelectedHeat.HeatID.Value, ct);
         if (details == null) return;
 
         // Merge (UI arbeitet weiter mit SelectedHeat-Instanz aus Liste)
@@ -224,7 +219,7 @@ public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
             return;
         }
 
-        await _api.SetRefereeAsync(EventId, SelectedHeat.HeatID.Value, SelectedReferee, ct);
+        await raceHeatApi.SetRefereeAsync(EventId, SelectedHeat.HeatID.Value, SelectedReferee, ct);
         StatusText = "Rennen begleiten: gesetzt.";
     }
 

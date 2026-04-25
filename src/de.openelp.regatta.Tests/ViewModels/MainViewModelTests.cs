@@ -26,7 +26,7 @@ public class MainViewModelTests
 
         // Assert
         Assert.NotNull(pages);
-        Assert.Equal(3, pages.Count);
+        Assert.Equal(5, pages.Count);
         var pageItem = pages[0];
         Assert.Equal("Home", pageItem.Header);
         return Task.CompletedTask;

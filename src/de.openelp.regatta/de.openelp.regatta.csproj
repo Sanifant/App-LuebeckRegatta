@@ -11,6 +11,14 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Compile Remove="Assets\Icons.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaResource Include="Icons.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Avalonia" />
         <PackageReference Include="Avalonia.Controls.DataGrid" />
         <PackageReference Include="Avalonia.Themes.Fluent" />

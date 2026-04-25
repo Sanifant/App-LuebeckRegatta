@@ -18,4 +18,5 @@ static class Program
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();
+
 }

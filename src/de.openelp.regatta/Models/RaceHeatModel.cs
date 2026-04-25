@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace de.openelp.regatta.Models;
 
@@ -31,6 +32,7 @@ public class RaceHeatModel
     /// <summary>
     /// Gets or sets the race ID
     /// </summary>
+    [JsonPropertyName("id")]
     public int? Id { get; set; }
 
     /// <summary>
@@ -47,6 +49,16 @@ public class RaceHeatModel
     /// Gets or sets the race status
     /// </summary>
     public string? Status { get; set; }
+
+    /// <summary>
+    /// Gets or sets the referee ID
+    /// </summary>
+    public int? RefereeId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the finish referee ID
+    /// </summary>
+    public int? FinishRefereeId { get; set; }
 
     /// <summary>
     /// Gets or sets the list of heat entries
