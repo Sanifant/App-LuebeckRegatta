@@ -172,7 +172,7 @@ jobs:
     - name: Download Android Artifacts
       uses: actions/download-artifact@v4
       with:
-        pattern: android-build
+        pattern: android-app
         path: release-assets
         
     - name: Upload Android Assets to Release
