@@ -52,7 +52,7 @@ jobs:
         path: ./TestResults/*.trx
         retention-days: 7
 
-build-desktop:
+  build-desktop:
     name: Build Desktop (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     needs: [test]
@@ -202,7 +202,7 @@ build-desktop:
           (cd "$dir" && zip -r "../${name}.zip" .)
         done
 
-- name: Upload Desktop Assets to Release
+    - name: Upload Desktop Assets to Release
       uses: softprops/action-gh-release@v2
       with:
         files: |
