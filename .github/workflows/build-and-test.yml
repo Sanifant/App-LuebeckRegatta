@@ -52,40 +52,59 @@ jobs:
         path: ./TestResults/*.trx
         retention-days: 7
 
-  build-desktop:
+build-desktop:
     name: Build Desktop (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     needs: [test]
     if: github.event_name == 'release' && github.event.action == 'created'
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v4
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
 
-    - name: Clear NuGet Caches
-      run: dotnet nuget locals all --clear
+    - name: Extract Version
+      id: get_version
+      shell: bash
+      run: |
+        VERSION=${GITHUB_REF_NAME#v}
+        echo "VERSION_NAME=$VERSION" >> $GITHUB_OUTPUT
+        echo "VERSION_FULL=$VERSION.${{ github.run_number }}" >> $GITHUB_OUTPUT
 
-    - name: Restore Desktop Project
-      run: dotnet restore src/Desktop/Desktop.csproj --no-cache
+    - name: Publish Desktop (Self-Contained)
+      # Wir publishen "Self-Contained", damit der User kein .NET installieren muss
+      run: |
+        dotnet publish src/Desktop/Desktop.csproj -c Release \
+          -r ${{ matrix.os == 'windows-latest' && 'win-x64' || 'linux-x64' }} \
+          --self-contained true \
+          -p:PublishSingleFile=true \
+          -p:Version=${{ steps.get_version.outputs.VERSION_FULL }} \
+          -o ./publish/app
 
-    - name: Build Desktop Project
-      run: dotnet build src/Desktop/Desktop.csproj -c Release --no-restore
+    - name: Create Windows MSI
+      if: matrix.os == 'windows-latest'
+      run: |
+        dotnet tool install --global dotnet-wix
+        dotnet wix src/Desktop/Desktop.csproj -c Release -o ./publish/installers/RegattaSetup.msi
 
-    - name: Upload Desktop Artifacts
+    - name: Create Linux DEB
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        dotnet tool install --global dotnet-deb
+        dotnet deb src/Desktop/Desktop.csproj -c Release -o ./publish/installers/regatta.deb
+
+    - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: desktop-build-${{ matrix.os }}
-        path: src/Desktop/bin/Release/net10.0/**
-        retention-days: 7
+        name: installers-${{ matrix.os }}
+        path: ./publish/installers/*
 
   build-android:
     name: Build Android
@@ -183,10 +202,13 @@ jobs:
           (cd "$dir" && zip -r "../${name}.zip" .)
         done
 
-    - name: Upload Desktop Assets to Release
+- name: Upload Desktop Assets to Release
       uses: softprops/action-gh-release@v2
       with:
-        files: release-assets/*.zip
+        files: |
+          release-assets/**/*.msi
+          release-assets/**/*.deb
+          release-assets/**/*.zip
 
   publish-android-release-assets:
     name: Publish Android to Play Store
