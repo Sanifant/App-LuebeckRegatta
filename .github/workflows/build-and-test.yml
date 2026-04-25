@@ -170,6 +170,6 @@ jobs:
       with:
         serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
         packageName: de.openelp.regatta
-        releaseFiles: release-assets/**/*.aak
+        releaseFiles: release-assets/**/*.apk
         track: internal
 
