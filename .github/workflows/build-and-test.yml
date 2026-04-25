@@ -151,7 +151,7 @@ jobs:
           -p:AndroidSigningKeyPass=${{ secrets.KEY_PASSWORD }} \
           -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_PASSWORD }} \
           -p:ApplicationVersion=${{ steps.get_version.outputs.VERSION_CODE }} \
-          -p:ApplicationDisplayVersion=${{ steps.get_version.outputs.VERSION_NAME }} \
+          -p:ApplicationDisplayVersion="${{ steps.get_version.outputs.VERSION_NAME }}" \
           -o ./publish/android/apk
 
     - name: Upload Android Artifacts
