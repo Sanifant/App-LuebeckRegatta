@@ -109,17 +109,19 @@ jobs:
     - name: Build and Sign Android Project
       run: >
         dotnet build src/Android/Android.csproj -c Release --no-restore
-        -p:AndroidKeyStore=true
-        -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore
-        -p:AndroidSigningKeyAlias=${{ secrets.KEY_ALIAS }}
-        -p:AndroidSigningKeyPass=${{ secrets.KEY_PASSWORD }}
-        -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_PASSWORD }}
+          -p:AndroidKeyStore=true
+          -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore
+          -p:AndroidSigningKeyAlias=${{ secrets.KEY_ALIAS }}
+          -p:AndroidSigningKeyPass=${{ secrets.KEY_PASSWORD }}
+          -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_PASSWORD }}
+          -o ./publish/android
 
     - name: Upload Android Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: android-build
-        path: src/Android/bin/Release/net10.0-android/*-Signed.aab
+        name: android-app
+        path: ./publish/android/*.apk
+        if-no-files-found: warn
         retention-days: 7
 
   publish-desktop-release-assets:
@@ -166,6 +168,6 @@ jobs:
       with:
         serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
         packageName: de.openelp.regatta
-        releaseFiles: release-assets/**/*.aab
+        releaseFiles: release-assets/**/*.aak
         track: internal
 
