@@ -208,4 +208,5 @@ jobs:
         packageName: de.openelp.regatta
         releaseFiles: release-assets/**/*-Signed.aab
         track: internal
+        status: draft
 
