@@ -125,20 +125,29 @@ jobs:
         echo "VERSION_NAME=$VERSION" >> $GITHUB_OUTPUT
         echo "VERSION_CODE=${{ github.run_number }}" >> $GITHUB_OUTPUT
 
-    - name: Build and Sign Android Project
+    - name: Build Android (AAB and APK)
       run: |
+        # 1. Erzeuge das AAB für den Play Store
         dotnet publish src/Android/Android.csproj \
-          -c Release \
-          -f net10.0-android \
+          -c Release -f net10.0-android \
           -p:AndroidPackageFormat=aab \
           -p:AndroidKeyStore=true \
           -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore \
           -p:AndroidSigningKeyAlias=${{ secrets.KEY_ALIAS }} \
           -p:AndroidSigningKeyPass=${{ secrets.KEY_PASSWORD }} \
           -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_PASSWORD }} \
-          -p:ApplicationVersion=${{ steps.get_version.outputs.VERSION_CODE }} \
-          -p:ApplicationDisplayVersion=${{ steps.get_version.outputs.VERSION_NAME }} \
           -o ./publish/android
+
+        # 2. Erzeuge die APK für manuelles Testen
+        dotnet publish src/Android/Android.csproj \
+          -c Release -f net10.0-android \
+          -p:AndroidPackageFormat=apk \
+          -p:AndroidKeyStore=true \
+          -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore \
+          -p:AndroidSigningKeyAlias=${{ secrets.KEY_ALIAS }} \
+          -p:AndroidSigningKeyPass=${{ secrets.KEY_PASSWORD }} \
+          -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_PASSWORD }} \
+          -o ./publish/android/apk
 
     - name: Upload Android Artifacts
       uses: actions/upload-artifact@v4
@@ -190,7 +199,7 @@ jobs:
     - name: Upload Android Assets to Release
       uses: softprops/action-gh-release@v2
       with:
-        files: release-assets/**/*.aab
+        files: release-assets/**/*.apk
 
     - name: Publish to Google Play Store
       uses: r0adkll/upload-google-play@v1
