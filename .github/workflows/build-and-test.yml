@@ -121,29 +121,6 @@ jobs:
         dotnet tool install --global dotnet-wix
         dotnet wix src/Desktop/Desktop.csproj -c Release -o ./publish/installers/RegattaSetup.msi
 
-    - name: Create Linux DEB
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        dotnet tool install --global dotnet-deb
-        
-        # 1. Manually publish first to ensure the binaries are exactly what we want
-        dotnet publish src/Desktop/Desktop.csproj \
-          -c Release \
-          -r linux-x64 \
-          -f net10.0 \
-          -p:Version=${{ steps.get_version.outputs.VERSION_FULL }} \
-          --self-contained true
-        
-        # 2. Run dotnet-deb using only its supported flags
-        # We use --no-restore so it doesn't try (and fail) to re-run MSBuild with its own logic
-        mkdir -p ./publish/installers
-        dotnet deb src/Desktop/Desktop.csproj \
-          -c Release \
-          -r linux-x64 \
-          -f net10.0 \
-          -o ./publish/installers \
-          --no-restore
-
     - name: Create AppImage (Linux)
       if: matrix.os == 'ubuntu-latest'
       run: |
@@ -204,11 +181,36 @@ jobs:
 
         ls -lh ./publish/installers/*.AppImage
 
+    - name: Create Linux DEB
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        dotnet tool install --global dotnet-deb
+        
+        # 1. Manually publish first to ensure the binaries are exactly what we want
+        dotnet publish src/Desktop/Desktop.csproj \
+          -c Release \
+          -r linux-x64 \
+          -f net10.0 \
+          -p:Version=${{ steps.get_version.outputs.VERSION_FULL }} \
+          --self-contained true
+        
+        # 2. Run dotnet-deb using only its supported flags
+        # We use --no-restore so it doesn't try (and fail) to re-run MSBuild with its own logic
+        mkdir -p ./publish/installers
+        dotnet deb src/Desktop/Desktop.csproj \
+          -c Release \
+          -r linux-x64 \
+          -f net10.0 \
+          -o ./publish/installers \
+          --no-restore
+
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: installers-${{ matrix.os }}
         path: ./publish/installers/*
+        retention-days: 7
 
   build-android:
     name: Build Android
