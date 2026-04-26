@@ -136,12 +136,13 @@ jobs:
         
         # 2. Run dotnet-deb using only its supported flags
         # We use --no-restore so it doesn't try (and fail) to re-run MSBuild with its own logic
+        mkdir -p ./publish/installers
         dotnet deb src/Desktop/Desktop.csproj \
           -c Release \
           -r linux-x64 \
           -f net10.0 \
-          -o ./publish/installers/regatta.deb \
-          --no-restore true
+          -o ./publish/installers \
+          --no-restore
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
