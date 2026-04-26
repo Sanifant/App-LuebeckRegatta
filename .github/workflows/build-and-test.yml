@@ -56,7 +56,7 @@ jobs:
     name: Build Desktop (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     needs: [test]
-    if: github.event_name == 'release' && github.event.action == 'created'
+    # if: github.event_name == 'release' && github.event.action == 'created'
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -76,7 +76,12 @@ jobs:
       id: get_version
       shell: bash
       run: |
-        VERSION=${GITHUB_REF_NAME#v}
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          VERSION=${GITHUB_REF_NAME#v}
+        else
+          VERSION="0.0.9-dev"
+        fi
+        
         echo "VERSION_NAME=$VERSION" >> $GITHUB_OUTPUT
         echo "VERSION_FULL=$VERSION.${{ github.run_number }}" >> $GITHUB_OUTPUT
 
