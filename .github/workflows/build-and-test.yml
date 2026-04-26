@@ -172,12 +172,17 @@ jobs:
         # Icon (du hast es bereits im Desktop.csproj-Assets, wir nehmen die Datei direkt)
         cp src/Desktop/Assets/lrv-logo.png "$APPDIR/usr/share/icons/hicolor/256x256/apps/$APP_ID.png"
 
-        # 3) appimagetool holen und AppImage bauen
-        mkdir -p ./publish/installers
-        curl -L -o appimagetool "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
-        chmod +x appimagetool
+        # 3) appimagetool holen und ohne FUSE nutzbar machen
+        curl -L -o appimagetool.AppImage \
+          "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+        chmod +x appimagetool.AppImage
 
-        ./appimagetool "$APPDIR" "./publish/installers/Luebeck-Regatta-${VERSION}-x86_64.AppImage"
+        # Extract (kein FUSE nötig)
+        ./appimagetool.AppImage --appimage-extract
+        chmod +x squashfs-root/AppRun
+
+        # Build AppImage
+        ./squashfs-root/AppRun "$APPDIR" "./publish/installers/Luebeck-Regatta-${VERSION}-x86_64.AppImage"
 
         ls -lh ./publish/installers/*.AppImage
 
