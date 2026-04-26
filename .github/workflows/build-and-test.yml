@@ -40,13 +40,15 @@ jobs:
       # Wir restoren die gesamte Solution oder das spezifische Projekt
       run: dotnet restore src/de.openelp.regatta.Tests/de.openelp.regatta.Tests.csproj
 
-    - name: Run xUnit Tests
+    - name: Run xUnit Tests (TRX + OpenCover)
       run: |
         dotnet test src/de.openelp.regatta.Tests/de.openelp.regatta.Tests.csproj \
           -c Release \
           --logger "trx;LogFileName=test_results.trx" \
           --results-directory ./TestResults \
-          --collect:"XPlat Code Coverage"
+          /p:CollectCoverage=true \
+          /p:CoverletOutput=./TestResults/coverage/ \
+          /p:CoverletOutputFormat=opencover
 
     - name: Publish test results (GitHub Check)
       if: always()
