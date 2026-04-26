@@ -107,6 +107,7 @@ jobs:
 
     - name: Publish Desktop (Self-Contained)
       # Wir publishen "Self-Contained", damit der User kein .NET installieren muss
+      shell: bash
       run: |
         dotnet publish src/Desktop/Desktop.csproj -c Release \
           -r ${{ matrix.os == 'windows-latest' && 'win-x64' || 'linux-x64' }} \
@@ -192,29 +193,6 @@ jobs:
         ./squashfs-root/AppRun "$APPDIR" "./publish/installers/Luebeck-Regatta-${VERSION}-x86_64.AppImage"
 
         ls -lh ./publish/installers/*.AppImage
-
-    - name: Create Linux DEB
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        dotnet tool install --global dotnet-deb
-        
-        # 1. Manually publish first to ensure the binaries are exactly what we want
-        dotnet publish src/Desktop/Desktop.csproj \
-          -c Release \
-          -r linux-x64 \
-          -f net10.0 \
-          -p:Version=${{ steps.get_version.outputs.VERSION_FULL }} \
-          --self-contained true
-        
-        # 2. Run dotnet-deb using only its supported flags
-        # We use --no-restore so it doesn't try (and fail) to re-run MSBuild with its own logic
-        mkdir -p ./publish/installers
-        dotnet deb src/Desktop/Desktop.csproj \
-          -c Release \
-          -r linux-x64 \
-          -f net10.0 \
-          -o ./publish/installers \
-          --no-restore
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
