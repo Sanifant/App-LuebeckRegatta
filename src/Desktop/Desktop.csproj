@@ -1,46 +1,47 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <!--If you are willing to use platform-specific APIs, use conditional compilation.
-        See https://docs.avaloniaui.net/docs/guides/platforms/platform-specific-code/dotnet for more details.-->
-        <TargetFramework>net10.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <RootNamespace>AvaloniaApplication1.Desktop</RootNamespace>
-    </PropertyGroup>
+	<PropertyGroup>
+		<AssemblyName>App.LuebeckRegatta</AssemblyName>
+		<OutputType>WinExe</OutputType>
+		<!--If you are willing to use platform-specific APIs, use conditional compilation.
+		See https://docs.avaloniaui.net/docs/guides/platforms/platform-specific-code/dotnet for more details.-->
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<RootNamespace>AvaloniaApplication1.Desktop</RootNamespace>
+	</PropertyGroup>
 
-    <PropertyGroup>
-        <PackAsTool>false</PackAsTool>   
-        <ApplicationIcon>Assets/lrv-logo.ico</ApplicationIcon>
-    </PropertyGroup>
+	<PropertyGroup>
+		<PackAsTool>false</PackAsTool>   
+		<ApplicationIcon>Assets/lrv-logo.ico</ApplicationIcon>
+	</PropertyGroup>
 
 
-    <PropertyGroup>
-        <PackageReleaseNotes>Initial release for the 2026 season.</PackageReleaseNotes>
-        <RuntimeIdentifiers>linux-x64;win-x64</RuntimeIdentifiers>
-    </PropertyGroup>
-    
-    <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
-        <Content Include="Assets/lrv-logo.png">
-            <Pack>true</Pack>
-            <PackagePath>usr/share/icons/hicolor/256x256/apps/de.openelp.regatta.png</PackagePath>
-        </Content>
-    </ItemGroup>
+	<PropertyGroup>
+		<PackageReleaseNotes>Initial release for the 2026 season.</PackageReleaseNotes>
+		<RuntimeIdentifiers>linux-x64;win-x64</RuntimeIdentifiers>
+	</PropertyGroup>
+	
+	<ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
+		<Content Include="Assets/lrv-logo.png">
+			<Pack>true</Pack>
+			<PackagePath>usr/share/icons/hicolor/256x256/apps/de.openelp.regatta.png</PackagePath>
+		</Content>
+	</ItemGroup>
 
-    <PropertyGroup>
-        <ApplicationManifest>app.manifest</ApplicationManifest>
-    </PropertyGroup>
+	<PropertyGroup>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Avalonia.Desktop" />
-        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Include="Avalonia.Diagnostics">
-            <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
-            <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="Tmds.DBus.Protocol" />
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia.Desktop" />
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+		<PackageReference Include="Avalonia.Diagnostics">
+			<IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+			<PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Tmds.DBus.Protocol" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\de.openelp.regatta\de.openelp.regatta.csproj" />
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\de.openelp.regatta\de.openelp.regatta.csproj" />
+	</ItemGroup>
 </Project>
