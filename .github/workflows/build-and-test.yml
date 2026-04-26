@@ -140,6 +140,7 @@ jobs:
           -p:PublishSingleFile=true \
           -p:Version="$VERSION" \
           -o ./publish/linux
+        ls -la ./publish/linux
 
         # 2) Build AppDir layout
         APPDIR="./publish/AppDir"
@@ -173,6 +174,7 @@ jobs:
 
         # Icon (du hast es bereits im Desktop.csproj-Assets, wir nehmen die Datei direkt)
         cp src/Desktop/Assets/lrv-logo.png "$APPDIR/usr/share/icons/hicolor/256x256/apps/$APP_ID.png"
+        cp src/Desktop/Assets/lrv-logo.png "$APPDIR/$APP_ID.png"
 
         # 3) appimagetool holen und ohne FUSE nutzbar machen
         curl -L -o appimagetool.AppImage \
