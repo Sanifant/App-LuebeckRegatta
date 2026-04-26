@@ -32,6 +32,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="AppxManifest.xml" />
+		<None Include="Assets/lrv-logo.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Avalonia.Desktop" />
 		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
 		<PackageReference Include="Avalonia.Diagnostics">

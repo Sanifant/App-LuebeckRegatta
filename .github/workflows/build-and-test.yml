@@ -116,11 +116,44 @@ jobs:
           -p:Version=${{ steps.get_version.outputs.VERSION_FULL }} \
           -o ./publish/app
 
-    - name: Create Windows MSI
+    - name: Create Windows MSIX
       if: matrix.os == 'windows-latest'
+      shell: pwsh
       run: |
-        dotnet tool install --global dotnet-wix
-        dotnet wix src/Desktop/Desktop.csproj -c Release -o ./publish/installers/RegattaSetup.msi
+        $VersionName = "${{ steps.get_version.outputs.VERSION_NAME }}"
+        if ($VersionName -match '^(\d+)\.(\d+)\.(\d+)') {
+          $MsixVersion = "$($Matches[1]).$($Matches[2]).$($Matches[3]).${{ github.run_number }}"
+        }
+        else {
+          $MsixVersion = "1.0.0.${{ github.run_number }}"
+        }
+
+        $AppDir = "publish\app"
+        $MsixRoot = "publish\msix"
+        $InstallersDir = "publish\installers"
+        $MsixFile = Join-Path $InstallersDir "Luebeck-Regatta-${{ steps.get_version.outputs.VERSION_FULL }}-win-x64.msix"
+
+        New-Item -ItemType Directory -Force -Path $MsixRoot | Out-Null
+        New-Item -ItemType Directory -Force -Path $InstallersDir | Out-Null
+        Copy-Item -Path "$AppDir\*" -Destination $MsixRoot -Recurse -Force
+        Copy-Item -Path "src\Desktop\Assets\lrv-logo.png" -Destination (Join-Path $MsixRoot "lrv-logo.png") -Force
+
+        [xml]$Manifest = Get-Content "src\Desktop\AppxManifest.xml"
+        $Manifest.Package.Identity.Version = $MsixVersion
+        $Manifest.Save((Join-Path $MsixRoot "AppxManifest.xml"))
+
+        $MakeAppx = (Get-Command makeappx.exe -ErrorAction SilentlyContinue).Source
+        if (-not $MakeAppx) {
+          $MakeAppx = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\makeappx.exe" |
+            Sort-Object FullName -Descending |
+            Select-Object -First 1 -ExpandProperty FullName
+        }
+
+        if (-not $MakeAppx) {
+          throw "makeappx.exe not found on runner"
+        }
+
+        & $MakeAppx pack /d $MsixRoot /p $MsixFile /o
 
     - name: Create AppImage (Linux)
       if: matrix.os == 'ubuntu-latest'
@@ -287,8 +320,59 @@ jobs:
     - name: Download Desktop Artifacts
       uses: actions/download-artifact@v4
       with:
-        pattern: desktop-build-*
+        pattern: installers-*
         path: release-assets
+        merge-multiple: true
+
+    - name: Generate WinGet Manifests
+      run: |
+        set -euo pipefail
+
+        MSIX_PATH="$(find release-assets -type f -name '*.msix' | head -n 1)"
+        if [ -z "$MSIX_PATH" ]; then
+          echo "No MSIX artifact found; skipping WinGet manifest generation"
+          exit 0
+        fi
+
+        MSIX_FILE="$(basename "$MSIX_PATH")"
+        VERSION="$(echo "$MSIX_FILE" | sed -E 's/^Luebeck-Regatta-(.*)-win-x64\.msix$/\1/')"
+        SHA256="$(sha256sum "$MSIX_PATH" | awk '{print toupper($1)}')"
+        INSTALLER_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/${MSIX_FILE}"
+
+        mkdir -p release-assets/winget
+
+        cat > "release-assets/winget/Sanifant.LuebeckRegatta.yaml" <<EOF
+        PackageIdentifier: Sanifant.LuebeckRegatta
+        PackageVersion: $VERSION
+        DefaultLocale: de-DE
+        ManifestType: version
+        ManifestVersion: 1.6.0
+        EOF
+
+        cat > "release-assets/winget/Sanifant.LuebeckRegatta.installer.yaml" <<EOF
+        PackageIdentifier: Sanifant.LuebeckRegatta
+        PackageVersion: $VERSION
+        InstallerType: msix
+        Installers:
+          - Architecture: x64
+            InstallerUrl: $INSTALLER_URL
+            InstallerSha256: $SHA256
+            SignatureSha256: $SHA256
+        ManifestType: installer
+        ManifestVersion: 1.6.0
+        EOF
+
+        cat > "release-assets/winget/Sanifant.LuebeckRegatta.locale.de-DE.yaml" <<EOF
+        PackageIdentifier: Sanifant.LuebeckRegatta
+        PackageVersion: $VERSION
+        PackageLocale: de-DE
+        Publisher: OpenELP
+        PackageName: Lübeck Regatta
+        ShortDescription: Desktop-App für die Lübeck Regatta
+        License: Proprietary
+        ManifestType: defaultLocale
+        ManifestVersion: 1.6.0
+        EOF
 
     - name: Package Desktop Artifacts
       run: |
@@ -302,9 +386,11 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: |
-          release-assets/**/*.msi
+          release-assets/**/*.msix
+          release-assets/**/*.AppImage
           release-assets/**/*.deb
           release-assets/**/*.zip
+          release-assets/winget/*.yaml
 
   publish-android-release-assets:
     name: Publish Android to Play Store
