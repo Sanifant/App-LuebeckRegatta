@@ -104,8 +104,12 @@ jobs:
       run: |
         dotnet tool install --global dotnet-deb
         # Explicit restore helps the tool find the right TFM
-        dotnet restore src/Desktop/Desktop.csproj -f net10.0
-        dotnet deb src/Desktop/Desktop.csproj -c Release -o ./publish/installers/regatta.deb
+        # dotnet restore src/Desktop/Desktop.csproj -f net10.0
+        dotnet deb src/Desktop/Desktop.csproj -c Release \
+          -o ./publish/installers/regatta.deb \
+          -p:Version=${{ steps.get_version.outputs.VERSION_FULL }} \
+          -r linux-x64 \
+          -p:TargetFramework=net10.0
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
