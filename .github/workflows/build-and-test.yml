@@ -69,6 +69,8 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
+        # This ensures the installed SDK is the one used by subsequent tools
+        cache: true
 
     - name: Extract Version
       id: get_version
@@ -98,6 +100,8 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         dotnet tool install --global dotnet-deb
+        # Explicit restore helps the tool find the right TFM
+        dotnet restore src/Desktop/Desktop.csproj -f net10.0
         dotnet deb src/Desktop/Desktop.csproj -c Release -o ./publish/installers/regatta.deb
 
     - name: Upload Artifacts
