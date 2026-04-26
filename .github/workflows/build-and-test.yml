@@ -168,6 +168,8 @@ jobs:
         Categories=Utility;Sports;
         Terminal=false
         EOF
+        # appimagetool will a .desktop in the AppDir root
+        cp "$APPDIR/usr/share/applications/$APP_ID.desktop" "$APPDIR/$APP_ID.desktop"
 
         # Icon (du hast es bereits im Desktop.csproj-Assets, wir nehmen die Datei direkt)
         cp src/Desktop/Assets/lrv-logo.png "$APPDIR/usr/share/icons/hicolor/256x256/apps/$APP_ID.png"
