@@ -69,8 +69,6 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
-        # This ensures the installed SDK is the one used by subsequent tools
-        cache: true
 
     - name: Extract Version
       id: get_version
