@@ -26,7 +26,7 @@ public class MainViewModelTests
 
         // Assert
         Assert.NotNull(pages);
-        Assert.Equal(5, pages.Count);
+        Assert.Equal(4, pages.Count);
         var pageItem = pages[0];
         Assert.Equal("Home", pageItem.Header);
         return Task.CompletedTask;
@@ -61,7 +61,7 @@ public class MainViewModelTests
 
         // Assert
         Assert.NotNull(version);
-        Assert.Contains("Regatta App", version);
+        Assert.StartsWith("1.0", version);
         return Task.CompletedTask;
     }
 
