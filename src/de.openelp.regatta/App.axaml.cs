@@ -21,20 +21,32 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-
         var appConfiguration = AppConfiguration.Current;
+
+        // For Desktop: load persisted configuration before building services
+        FileConfigurationPersistence? persistence = null;
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
+        {
+            persistence = new FileConfigurationPersistence();
+            persistence.LoadAsync(appConfiguration).GetAwaiter().GetResult();
+        }
+
         var webApiBaseUrlOverride = Environment.GetEnvironmentVariable("REGATTA_WEB_API_BASE_URL");
         if (!string.IsNullOrWhiteSpace(webApiBaseUrlOverride))
         {
             appConfiguration.WebApiBaseUrl = webApiBaseUrlOverride;
         }
 
-        ReloadServices();
+        ReloadServices(persistence);
 
         var vm = Services.GetRequiredService<MainViewModel>();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            // Block the shutdown handler so the config is fully saved before the process exits.
+            desktop.ShutdownRequested += (_, _) =>
+                persistence!.SaveAsync(AppConfiguration.Current).GetAwaiter().GetResult();
+
             desktop.MainWindow = new MainWindow
             {
                 DataContext = vm
@@ -51,11 +63,23 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    public void ReloadServices()
+    /// <summary>
+    /// Rebuilds the DI service container, optionally registering the given configuration persistence implementation.
+    /// </summary>
+    /// <param name="configurationPersistence">
+    /// The persistence service to register, or <c>null</c> if no persistence is needed
+    /// (e.g. on Android where <c>MainActivity</c> handles it).
+    /// </param>
+    public void ReloadServices(IConfigurationPersistence? configurationPersistence = null)
     {
         var collection = new ServiceCollection();
         var appConfiguration = AppConfiguration.Current;
         collection.AddSingleton<IAppConfiguration>(appConfiguration);
+
+        if (configurationPersistence != null)
+        {
+            collection.AddSingleton<IConfigurationPersistence>(configurationPersistence);
+        }
 
         collection.AddSingleton<IEventApiService, EventApiService>();
         collection.AddSingleton<IRefereeApiService, RefereeApiService>();

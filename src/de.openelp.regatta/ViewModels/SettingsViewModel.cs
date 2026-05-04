@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using de.openelp.regatta.Interfaces;
 using de.openelp.regatta.Models;
 using de.openelp.regatta.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -71,10 +72,13 @@ public partial class SettingsViewModel : ViewModelBase
 
 
     [RelayCommand]
-    public Task SaveChanges()
+    public async Task SaveChanges()
     {
-
-        return Task.CompletedTask;
+        var persistence = App.Services.GetService<IConfigurationPersistence>();
+        if (persistence != null)
+        {
+            await persistence.SaveAsync(_configuration).ConfigureAwait(false);
+        }
     }
 
     [RelayCommand]
