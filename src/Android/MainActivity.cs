@@ -38,6 +38,12 @@ public class MainActivity : AvaloniaMainActivity
     /// </summary>
     private const string EncryptedPasswordKey = "EncryptedPassword";
 
+    /// <summary>GCM standard IV length in bytes.</summary>
+    private const int GcmIvLengthBytes = 12;
+
+    /// <summary>GCM authentication tag length in bits.</summary>
+    private const int GcmTagLengthBits = 128;
+
     protected override void OnCreate(Bundle? savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
@@ -100,7 +106,7 @@ public class MainActivity : AvaloniaMainActivity
                 preferences.Edit()!
                     .PutString(EncryptedPasswordKey, encrypted)!
                     .Remove(LegacyPasswordKey)!
-                    .Commit();
+                    .Apply();
             }
             catch (Exception ex)
             {
@@ -200,15 +206,14 @@ public class MainActivity : AvaloniaMainActivity
     /// </summary>
     private static string DecryptPassword(string encryptedBase64)
     {
-        const int ivLength = 12; // GCM standard IV length
         var combined = Convert.FromBase64String(encryptedBase64);
 
-        var iv = combined[..ivLength];
-        var ciphertext = combined[ivLength..];
+        var iv = combined[..GcmIvLengthBytes];
+        var ciphertext = combined[GcmIvLengthBytes..];
 
         var key = GetOrCreateSecretKey();
         var cipher = Cipher.GetInstance("AES/GCM/NoPadding")!;
-        cipher.Init(CipherMode.DecryptMode, key, new GCMParameterSpec(128, iv));
+        cipher.Init(CipherMode.DecryptMode, key, new GCMParameterSpec(GcmTagLengthBits, iv));
 
         var plaintext = cipher.DoFinal(ciphertext)!;
         return Encoding.UTF8.GetString(plaintext);
