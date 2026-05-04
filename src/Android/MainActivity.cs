@@ -37,7 +37,6 @@ public class MainActivity : AvaloniaMainActivity
             config.WebApiBaseUrl = preferences.GetString("WebApiBaseUrl", string.Empty) ?? string.Empty;
             config.SelectedEventId = preferences.GetInt("SelectedEvent", -1);
             config.UserName = preferences.GetString("UserName", string.Empty) ?? string.Empty;
-            config.Password = preferences.GetString("Password", string.Empty) ?? string.Empty;
         }
     }
 
@@ -54,7 +53,6 @@ public class MainActivity : AvaloniaMainActivity
             .PutString("WebApiBaseUrl", config.WebApiBaseUrl)
             .PutInt("SelectedEvent", config.SelectedEventId)
             .PutString("UserName", config.UserName)
-            .PutString("Password", config.Password)
             .Apply();
         }
     }
