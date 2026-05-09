@@ -5,13 +5,9 @@ using de.openelp.regatta.Models;
 using de.openelp.regatta.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace de.openelp.regatta.ViewModels;
@@ -19,15 +15,14 @@ namespace de.openelp.regatta.ViewModels;
 public partial class SettingsViewModel : ViewModelBase
 {
     private readonly IAppConfiguration _configuration;
-    private ObservableCollection<EventModel>? availableEvents;
+    private readonly ObservableCollection<EventModel> _availableEvents = new();
 
     public SettingsViewModel(IAppConfiguration? configuration = null)
     {
         _configuration = configuration ?? AppConfiguration.Current;
-        availableEvents = new ObservableCollection<EventModel>();
         this.AvailableThemes = new ObservableCollection<string>() { "Light", "Dark", "System" };
 
-        if (!String.IsNullOrWhiteSpace(configuration.WebApiBaseUrl)) LoadEvents();
+        if (!String.IsNullOrWhiteSpace(_configuration.WebApiBaseUrl)) LoadEvents();
 
         UrlValid = "Yellow";
     }
@@ -45,30 +40,37 @@ public partial class SettingsViewModel : ViewModelBase
     [RelayCommand]
     public void CheckConnection()
     {
-        if (this._configuration.User == null)
+        var user = this._configuration.User;
+        if (user == null)
+        {
+            this.CanSaveChanges = false;
+            UrlValid = "OrangeRed";
+            ErrorMessage = "Benutzer konnte nicht geladen werden.";
+        }
+        else
         {
             this.CanSaveChanges = true;
 
-            this.availableEvents = new ObservableCollection<EventModel>(this._configuration.User.Events);
+            this._availableEvents.Clear();
+            foreach (var eventModel in user.Events ?? Enumerable.Empty<EventModel>())
+            {
+                this._availableEvents.Add(eventModel);
+            }
 
+            OnPropertyChanged(nameof(AvailableEvents));
             OnPropertyChanged(nameof(CanSaveChanges));
             UrlValid = "Green";
             ErrorMessage = string.Empty;
         }
-        else
-        {
-            this.CanSaveChanges = false;
-            UrlValid = "OrangeRed";
-        }
     }
 
     [ObservableProperty]
-    private string errorMessage = string.Empty;
+    private string _errorMessage = string.Empty;
 
     public bool CanSaveChanges { get; set; }
 
     [ObservableProperty]
-    private string urlValid = string.Empty;
+    private string _urlValid = string.Empty;
 
 
     [RelayCommand]
@@ -82,40 +84,44 @@ public partial class SettingsViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public Task ParseUrl()
+    public async Task ParseUrl()
     {
         if (WebApiBaseUrl != string.Empty)
         {
             var uri = new Uri(WebApiBaseUrl);
             var eventName = uri.Segments[1].TrimEnd('/');
 
-            var _eventApiService = new EventApiService(this._configuration);
-            var eventTask = _eventApiService.GetEventByNameAsync(eventName)
-                .ContinueWith(task =>
+            var eventApiService = new EventApiService(this._configuration);
+            try
+            {
+                var selectedEvent = await eventApiService.GetEventByNameAsync(eventName);
+                if (selectedEvent != null)
                 {
-                    if (task.IsCompletedSuccessfully)
-                    {
-                        SelectedEvent = task.Result;
-                    }
-                    else
-                    {
-                        ErrorMessage = task.Exception?.InnerException?.Message ?? "unknown error";
-                        this.CanSaveChanges = false;
-                        UrlValid = "OrangeRed";
-                    }
-                });
+                    SelectedEvent = selectedEvent;
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                this.CanSaveChanges = false;
+                UrlValid = "OrangeRed";
+            }
         }
 
 
-        return Task.CompletedTask;
     }
 
     private async void LoadEvents()
     {
-        var _eventApiService = new EventApiService(this._configuration);
+        var eventApiService = new EventApiService(this._configuration);
         try
         {
-            this.availableEvents = new ObservableCollection<EventModel>(await _eventApiService.GetEventsAsync());
+                this._availableEvents.Clear();
+                var events = await eventApiService.GetEventsAsync();
+                foreach (var eventModel in events ?? Enumerable.Empty<EventModel>())
+                {
+                    this._availableEvents.Add(eventModel);
+                }
             UrlValid = "Green";
             OnPropertyChanged(nameof(AvailableEvents));
             ErrorMessage = string.Empty;
@@ -150,27 +156,20 @@ public partial class SettingsViewModel : ViewModelBase
 
     public ObservableCollection<EventModel> AvailableEvents
     {
-        get
-        {
-            if (availableEvents == null)
-            {
-                LoadEvents();
-            }
-            return availableEvents;
-        }
+        get => _availableEvents;
     }
 
 
-    private EventModel selectedEvent;
+    private EventModel _selectedEvent = new();
 
     public EventModel SelectedEvent
     {
-        get => selectedEvent;
+        get => _selectedEvent;
         set
         {
-            selectedEvent = value;
+            _selectedEvent = value;
             _configuration.SelectedEvent = value;
-            OnPropertyChanged(nameof(SelectedEvent));
+            OnPropertyChanged();
         }
     }
 

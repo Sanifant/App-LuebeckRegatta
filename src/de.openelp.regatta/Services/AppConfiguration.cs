@@ -2,7 +2,6 @@ using de.openelp.regatta.Interfaces;
 using de.openelp.regatta.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.ObjectModel;
 
 namespace de.openelp.regatta.Services;
 
@@ -12,8 +11,8 @@ namespace de.openelp.regatta.Services;
 public sealed class AppConfiguration : IAppConfiguration
 {
     private string _webApiBaseUrl = "https://regatta-test.grinch-tech.de";
-    private EventModel? _eventModel;
-    private int selectedEventId = -1;
+    private EventModel _eventModel = new();
+    private int _selectedEventId = -1;
     private UserDto? _user;
 
     /// <summary>
@@ -45,11 +44,11 @@ public sealed class AppConfiguration : IAppConfiguration
     {
         get
         {
-            return selectedEventId;
+            return _selectedEventId;
         }
         set
         {
-            selectedEventId = value;
+            _selectedEventId = value;
         }
     }
 
@@ -88,12 +87,16 @@ public sealed class AppConfiguration : IAppConfiguration
     {
         get
         {
-            if(_eventModel == null && selectedEventId != -1)
+            if (_selectedEventId != -1 && _eventModel.Id == 0)
             { 
                 var apiService = App.Services.GetService<IEventApiService>();
                 if (apiService != null)
                 {
-                    _eventModel = apiService.GetEventAsync(selectedEventId).Result;
+                    var eventModel = apiService.GetEventAsync(_selectedEventId).Result;
+                    if (eventModel != null)
+                    {
+                        _eventModel = eventModel;
+                    }
                 }
             }
             return _eventModel;
@@ -101,7 +104,7 @@ public sealed class AppConfiguration : IAppConfiguration
         set
         {
             this._eventModel = value;
-            this.selectedEventId = value.Id;
+            this._selectedEventId = value.Id;
         }
     }
 
@@ -116,9 +119,13 @@ public sealed class AppConfiguration : IAppConfiguration
                     return null;
                 }
 
-                var _authApiService = App.Services.GetService<IAuthApiService>();
+                var authApiService = App.Services.GetService<IAuthApiService>();
+                if (authApiService == null)
+                {
+                    return _user;
+                }
 
-                _authApiService.LoginAsync(new LoginRequestDto() { Username = this.UserName, Password = this.Password })
+                authApiService.LoginAsync(new LoginRequestDto() { Username = this.UserName, Password = this.Password })
                     .ContinueWith(task =>
                     {
 

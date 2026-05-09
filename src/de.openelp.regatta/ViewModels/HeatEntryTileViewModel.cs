@@ -1,11 +1,10 @@
 using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System.Linq;
 using de.openelp.regatta.Models;
 
 namespace de.openelp.regatta.ViewModels;
 
-public partial class HeatEntryTileViewModel : ViewModelBase
+public class HeatEntryTileViewModel : ViewModelBase
 {
     private int _warningCount;
 
@@ -21,7 +20,7 @@ public partial class HeatEntryTileViewModel : ViewModelBase
     public string? Status => Model.Status;
 
     public string AthletesText =>
-        (Model.Athletes?.Count ?? 0) == 0 ? "—" : string.Join(", ", Model.Athletes);
+        Model.Athletes.Count == 0 ? "—" : string.Join(", ", Model.Athletes.ToArray());
 
     public int WarningCount
     {

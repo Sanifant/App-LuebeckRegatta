@@ -6,19 +6,17 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace de.openelp.regatta.Tests.ViewModels
 {
     public class PublicBoatViewModelTest
     {
-        private IBoatApiService boatService;
-        private IRaceApiService raceApiService;
+        private IBoatApiService _boatService = null!;
+        private IRaceApiService _raceApiService = null!;
 
         [Fact]
-        public async Task TestThat_Races_AreLoaded()
+        public void TestThat_Races_AreLoaded()
         {
             // Arrange
             var boats = new List<BoatDto>
@@ -28,16 +26,16 @@ namespace de.openelp.regatta.Tests.ViewModels
                 new BoatDto { Number = 3, TeamShort= "MRG", Team = "Münchner Regatta Gesellschaft", Athletes = "Lisa, Tom" },
                 new BoatDto { Number = 4, TeamShort= "HRG", Team = "Hamburger Regatta Gesellschaft", Athletes = "Sophie, Max" }
             };
-            boatService = new Mock_BoatApiService(boats);
+            _boatService = new Mock_BoatApiService(boats);
             var races = new List<RaceDto>
             {
                 new RaceDto { RaceNumber = "1", RaceTitle = "100m Sprint", RaceStartTime = DateTime.Now.AddHours(1) },
                 new RaceDto { RaceNumber = "2", RaceTitle = "200m Sprint", RaceStartTime = DateTime.Now.AddHours(2) },
                 new RaceDto { RaceNumber = "3", RaceTitle = "100m Sprint", RaceStartTime = DateTime.Now.AddHours(1) }
             };
-            raceApiService = new Mock_RaceApiService(races);
+            _raceApiService = new Mock_RaceApiService(races);
 
-            var viewModel = new PublicBoatViewModel(boatService, raceApiService);
+            var viewModel = new PublicBoatViewModel(_boatService, _raceApiService);
 
             // Act
             ObservableCollection<RaceDto> result = viewModel.Races;
@@ -47,7 +45,7 @@ namespace de.openelp.regatta.Tests.ViewModels
         }
 
         [Fact]
-        public async Task TestThat_Boats_AreLoaded()
+        public void TestThat_Boats_AreLoaded()
         {
             // Arrange
             var boats = new List<BoatDto>
@@ -57,26 +55,26 @@ namespace de.openelp.regatta.Tests.ViewModels
                 new BoatDto { Number = 3, TeamShort= "MRG", Team = "Münchner Regatta Gesellschaft", Athletes = "Lisa, Tom" },
                 new BoatDto { Number = 4, TeamShort= "HRG", Team = "Hamburger Regatta Gesellschaft", Athletes = "Sophie, Max" }
             };
-            boatService = new Mock_BoatApiService(boats);
+            _boatService = new Mock_BoatApiService(boats);
             var races = new List<RaceDto>
             {
                 new RaceDto { RaceNumber = "1", RaceTitle = "100m Sprint", RaceStartTime = DateTime.Now.AddHours(1) },
                 new RaceDto { RaceNumber = "2", RaceTitle = "200m Sprint", RaceStartTime = DateTime.Now.AddHours(2) },
                 new RaceDto { RaceNumber = "3", RaceTitle = "100m Sprint", RaceStartTime = DateTime.Now.AddHours(1) }
             };
-            raceApiService = new Mock_RaceApiService(races);
+            _raceApiService = new Mock_RaceApiService(races);
 
-            var viewModel = new PublicBoatViewModel(boatService, raceApiService);
+            var viewModel = new PublicBoatViewModel(_boatService, _raceApiService);
 
 
             // Act
             ObservableCollection<BoatDto> result = viewModel.Boats;
-            Assert.Equal(0, result.Count);
+            Assert.Empty(result);
             // Assert
         }
 
         [Fact]
-        public async Task TestThat_Boats_For_SelectedRace_IsLoaded()
+        public void TestThat_Boats_For_SelectedRace_IsLoaded()
         {
             // Arrange
             bool propertyCalled = false;
@@ -96,12 +94,12 @@ namespace de.openelp.regatta.Tests.ViewModels
             };
             races.Add(raceToSelect);
 
-            boatService = new Mock_BoatApiService(boats);
-            raceApiService = new Mock_RaceApiService(races);
+            _boatService = new Mock_BoatApiService(boats);
+            _raceApiService = new Mock_RaceApiService(races);
 
-            var viewModel = new PublicBoatViewModel(boatService, raceApiService);
+            var viewModel = new PublicBoatViewModel(_boatService, _raceApiService);
 
-            viewModel.PropertyChanged += (sender, e) =>
+            viewModel.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName == nameof(PublicBoatViewModel.SelectedRace))
                 {
@@ -120,7 +118,7 @@ namespace de.openelp.regatta.Tests.ViewModels
         }
 
         [Fact]
-        public async Task TestThat_NextCommand_Selectes_Next_Race()
+        public void TestThat_NextCommand_Selectes_Next_Race()
         {
             bool propertyCalled = false;
             var raceToSelect = new RaceDto { RaceId = 4, RaceNumber = "4", RaceTitle = "100m Sprint", RaceStartTime = DateTime.Now };
@@ -139,13 +137,13 @@ namespace de.openelp.regatta.Tests.ViewModels
             };
             races.Add(raceToSelect);
 
-            boatService = new Mock_BoatApiService(boats);
-            raceApiService = new Mock_RaceApiService(races);
+            _boatService = new Mock_BoatApiService(boats);
+            _raceApiService = new Mock_RaceApiService(races);
 
-            var viewModel = new PublicBoatViewModel(boatService, raceApiService);
+            var viewModel = new PublicBoatViewModel(_boatService, _raceApiService);
             viewModel.SelectedRace = raceToSelect;
 
-            viewModel.PropertyChanged += (sender, e) =>
+            viewModel.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName == nameof(PublicBoatViewModel.SelectedRace))
                 {
@@ -164,7 +162,7 @@ namespace de.openelp.regatta.Tests.ViewModels
         }
 
         [Fact]
-        public async Task TestThat_NextCommand_Throws_NoError_When_Reached_End()
+        public void TestThat_NextCommand_Throws_NoError_When_Reached_End()
         {
             // Arrange
             bool propertyCalled = true;
@@ -184,13 +182,13 @@ namespace de.openelp.regatta.Tests.ViewModels
             };
             races.Add(raceToSelect);
 
-            boatService = new Mock_BoatApiService(boats);
-            raceApiService = new Mock_RaceApiService(races.OrderBy(r => r.RaceId).ToList());
+            _boatService = new Mock_BoatApiService(boats);
+            _raceApiService = new Mock_RaceApiService(races.OrderBy(r => r.RaceId).ToList());
 
-            var viewModel = new PublicBoatViewModel(boatService, raceApiService);
+            var viewModel = new PublicBoatViewModel(_boatService, _raceApiService);
             viewModel.SelectedRace = raceToSelect;
 
-            viewModel.PropertyChanged += (sender, e) =>
+            viewModel.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName == nameof(PublicBoatViewModel.SelectedRace))
                 {
@@ -205,7 +203,7 @@ namespace de.openelp.regatta.Tests.ViewModels
         }
 
         [Fact]
-        public async Task TestThat_PrevCommand_Selectes_Next_Race()
+        public void TestThat_PrevCommand_Selectes_Next_Race()
         {
             // Arrange
             bool propertyCalled = false;
@@ -225,13 +223,13 @@ namespace de.openelp.regatta.Tests.ViewModels
             };
             races.Add(raceToSelect);
 
-            boatService = new Mock_BoatApiService(boats);
-            raceApiService = new Mock_RaceApiService(races);
+            _boatService = new Mock_BoatApiService(boats);
+            _raceApiService = new Mock_RaceApiService(races);
 
-            var viewModel = new PublicBoatViewModel(boatService, raceApiService);
+            var viewModel = new PublicBoatViewModel(_boatService, _raceApiService);
             viewModel.SelectedRace = raceToSelect;
 
-            viewModel.PropertyChanged += (sender, e) =>
+            viewModel.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName == nameof(PublicBoatViewModel.SelectedRace))
                 {
@@ -250,7 +248,7 @@ namespace de.openelp.regatta.Tests.ViewModels
         }
 
         [Fact]
-        public async Task TestThat_PrevCommand_Throws_NoError_When_Reached_End()
+        public void TestThat_PrevCommand_Throws_NoError_When_Reached_End()
         {
             // Arrange
             bool propertyCalled = true;
@@ -270,13 +268,13 @@ namespace de.openelp.regatta.Tests.ViewModels
             };
             races.Add(raceToSelect);
 
-            boatService = new Mock_BoatApiService(boats);
-            raceApiService = new Mock_RaceApiService(races);
+            _boatService = new Mock_BoatApiService(boats);
+            _raceApiService = new Mock_RaceApiService(races);
 
-            var viewModel = new PublicBoatViewModel(boatService, raceApiService);
+            var viewModel = new PublicBoatViewModel(_boatService, _raceApiService);
             viewModel.SelectedRace = raceToSelect;
 
-            viewModel.PropertyChanged += (sender, e) =>
+            viewModel.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName == nameof(PublicBoatViewModel.SelectedRace))
                 {

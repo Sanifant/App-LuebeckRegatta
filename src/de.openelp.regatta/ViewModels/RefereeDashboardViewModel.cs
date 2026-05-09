@@ -1,11 +1,8 @@
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using de.openelp.regatta.Interfaces;
 using de.openelp.regatta.Models;
@@ -15,9 +12,7 @@ namespace de.openelp.regatta.ViewModels;
 
 public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
 {
-    private readonly IRefereeApiService refereeApi;
-    private readonly IRaceHeatApiService raceHeatApi;
-    private readonly IAppConfiguration _configuration;
+    private readonly IRaceHeatApiService _raceHeatApi;
 
     private readonly Timer _clockTimer;
 
@@ -30,16 +25,16 @@ public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
 
     public RefereeDashboardViewModel(IRefereeApiService refereeApi, IRaceHeatApiService raceHeatApi, IAppConfiguration? configuration = null)
     {
-        this.refereeApi = refereeApi ?? throw new ArgumentNullException(nameof(refereeApi));
-        this.raceHeatApi = raceHeatApi ?? throw new ArgumentNullException(nameof(raceHeatApi));
-        _configuration = configuration ?? AppConfiguration.Current;
+        _ = refereeApi ?? throw new ArgumentNullException(nameof(refereeApi));
+        _raceHeatApi = raceHeatApi ?? throw new ArgumentNullException(nameof(raceHeatApi));
+        var appConfiguration = configuration ?? AppConfiguration.Current;
 
         Heats = new ObservableCollection<RaceHeatModel>();
         SelectedHeatEntries = new ObservableCollection<HeatEntryTileViewModel>();
 
         Referees = new ObservableCollection<RefereeModel>();
 
-        _eventId = _configuration.SelectedEventId;
+        _eventId = appConfiguration.SelectedEventId;
 
         _clockTimer = new Timer(_ =>
         {
@@ -168,10 +163,12 @@ public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
 
     private async Task RefreshAsync(CancellationToken ct)
     {
-        var heats = await raceHeatApi.GetRaceHeatsAsync(EventId, ct);
+        var heats = await _raceHeatApi.GetRaceHeatsAsync(EventId, ct);
 
         // optional: nur Running wie in RefereeView.java
-        var running = heats.Where(h => string.Equals(h.Status, "Running", StringComparison.OrdinalIgnoreCase)).ToList();
+        var running = (heats ?? Enumerable.Empty<RaceHeatModel>())
+            .Where(h => string.Equals(h.Status, "Running", StringComparison.OrdinalIgnoreCase))
+            .ToList();
 
         Heats.Clear();
         foreach (var h in running)
@@ -192,7 +189,7 @@ public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
 
         // Controller: GET /{eventId}/RaceHeat/{raceId} filtert nach RACE_HEAT.ID,
         // daher verwenden wir HeatID (nicht Race.Id).
-        var details = await raceHeatApi.GetRaceHeatAsync(EventId, SelectedHeat.HeatID.Value, ct);
+        var details = await _raceHeatApi.GetRaceHeatAsync(EventId, SelectedHeat.HeatID.Value, ct);
         if (details == null) return;
 
         // Merge (UI arbeitet weiter mit SelectedHeat-Instanz aus Liste)
@@ -219,13 +216,14 @@ public partial class RefereeDashboardViewModel : ViewModelBase, IDisposable
             return;
         }
 
-        await raceHeatApi.SetRefereeAsync(EventId, SelectedHeat.HeatID.Value, SelectedReferee, ct);
+        await _raceHeatApi.SetRefereeAsync(EventId, SelectedHeat.HeatID.Value, SelectedReferee, ct);
         StatusText = "Rennen begleiten: gesetzt.";
     }
 
     private Task SaveNoteAsync(CancellationToken ct)
     {
         // RaceHeatController hat aktuell PUT noch TODO. Daher nur lokal im Mock.
+        _ = ct;
         StatusText = "Notiz gespeichert (lokal, Backend-PUT ist TODO).";
         return Task.CompletedTask;
     }

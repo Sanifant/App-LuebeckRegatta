@@ -89,7 +89,7 @@ public class FileConfigurationPersistenceTests : IDisposable
         await persistence.SaveAsync(config);
 
         var configFilePath = Path.Combine(_tempDir, "config.json");
-        var json = await File.ReadAllTextAsync(configFilePath);
+        var json = await File.ReadAllTextAsync(configFilePath, TestContext.Current.CancellationToken);
         Assert.DoesNotContain("supersecret", json, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("password", json, StringComparison.OrdinalIgnoreCase);
     }
@@ -107,7 +107,7 @@ public class FileConfigurationPersistenceTests : IDisposable
         await persistence.SaveAsync(config);
 
         var configFilePath = Path.Combine(_tempDir, "config.json");
-        var json = await File.ReadAllTextAsync(configFilePath);
+        var json = await File.ReadAllTextAsync(configFilePath, TestContext.Current.CancellationToken);
         Assert.DoesNotContain("mytoken123", json, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -118,7 +118,7 @@ public class FileConfigurationPersistenceTests : IDisposable
     public async Task Load_CorruptFile_DoesNotThrow()
     {
         var configFilePath = Path.Combine(_tempDir, "config.json");
-        await File.WriteAllTextAsync(configFilePath, "{ this is not valid json %%% }");
+        await File.WriteAllTextAsync(configFilePath, "{ this is not valid json %%% }", TestContext.Current.CancellationToken);
 
         var persistence = new FileConfigurationPersistence(_tempDir);
         var config = CreateConfig();

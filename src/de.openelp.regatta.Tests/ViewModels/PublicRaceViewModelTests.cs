@@ -5,18 +5,16 @@ using de.openelp.regatta.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace de.openelp.regatta.Tests.ViewModels
 {
     public class PublicRaceViewModelTests
     {
-        private IRaceApiService raceApiService;
+        private IRaceApiService _raceApiService = null!;
 
         [Fact]
-        public async Task TestThat_Races_AreLoaded()
+        public void TestThat_Races_AreLoaded()
         {
             // Arrange
             var races = new List<RaceDto>
@@ -25,9 +23,9 @@ namespace de.openelp.regatta.Tests.ViewModels
                 new RaceDto { RaceNumber = "2", RaceTitle = "200m Sprint", RaceStartTime = DateTime.Now.AddHours(2) },
                 new RaceDto { RaceNumber = "3", RaceTitle = "100m Sprint", RaceStartTime = DateTime.Now.AddHours(1) }
             };
-            raceApiService = new Mock_RaceApiService(races);
+            _raceApiService = new Mock_RaceApiService(races);
 
-            var viewModel = new PublicRaceViewModel(raceApiService);
+            var viewModel = new PublicRaceViewModel(_raceApiService);
 
             // Act
             ObservableCollection<RaceDto> result = viewModel.Races;

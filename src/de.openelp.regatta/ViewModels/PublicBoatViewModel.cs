@@ -2,11 +2,9 @@
 using de.openelp.regatta.Interfaces;
 using de.openelp.regatta.Models;
 using de.openelp.regatta.Services;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace de.openelp.regatta.ViewModels
 {
@@ -20,7 +18,7 @@ namespace de.openelp.regatta.ViewModels
         private readonly IRaceApiService _raceApiService;
         private readonly int _eventId;
 
-        private RaceDto _selectedRace;
+        private RaceDto? _selectedRace;
         private int _selectedRaceIndex;
 
         /// <summary>
@@ -43,7 +41,7 @@ namespace de.openelp.regatta.ViewModels
         /// <value>
         /// The selected race.
         /// </value>
-        public RaceDto SelectedRace
+        public RaceDto? SelectedRace
         {
             get
             {
@@ -54,8 +52,8 @@ namespace de.openelp.regatta.ViewModels
                 if (_selectedRace != value)
                 {
                     _selectedRace = value;
-                    _selectedRaceIndex = Races.IndexOf(_selectedRace);
-                    LoadBoats();
+                    _selectedRaceIndex = value == null ? -1 : Races.IndexOf(value);
+                    _ = LoadBoatsAsync();
                     OnPropertyChanged();
                 }
             }
@@ -115,17 +113,19 @@ namespace de.openelp.regatta.ViewModels
             }
         }
 
-        private void LoadBoats()
+        private async Task LoadBoatsAsync()
         {
-            _boatService.GetAllBoatsPerRaceAsync(_eventId, _selectedRace.RaceId)
-                .ContinueWith(task =>
-                {
-                    if (task.Result != null)
-                    {
-                        this.Boats = new ObservableCollection<BoatDto>(task.Result);
-                        OnPropertyChanged(nameof(Boats));
-                    }
-                });
+            if (_selectedRace == null)
+            {
+                return;
+            }
+
+            var boats = await _boatService.GetAllBoatsPerRaceAsync(_eventId, _selectedRace.RaceId);
+            if (boats != null)
+            {
+                this.Boats = new ObservableCollection<BoatDto>(boats);
+                OnPropertyChanged(nameof(Boats));
+            }
         }
 
     }

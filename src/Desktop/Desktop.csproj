@@ -17,7 +17,6 @@
 
 	<PropertyGroup>
 		<PackageReleaseNotes>Initial release for the 2026 season.</PackageReleaseNotes>
-		<RuntimeIdentifiers>linux-x64;win-x64</RuntimeIdentifiers>
 	</PropertyGroup>
 	
 	<ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
