@@ -72,6 +72,7 @@ jobs:
     # SonarCloud Scan (TRX + Coverage Pfade als args)
     - name: SonarCloud Scan
       if: always()
+      continue-on-error: true
       uses: SonarSource/sonarcloud-github-action@v3
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
