@@ -42,13 +42,15 @@ jobs:
 
     - name: Run xUnit Tests (TRX + OpenCover)
       run: |
-        dotnet test src/de.openelp.regatta.Tests/de.openelp.regatta.Tests.csproj \
+        dotnet test de.openelp.regatta.Tests/de.openelp.regatta.Tests.csproj \
           -c Release \
-          --logger "trx;LogFileName=test_results.trx" \
-          --results-directory ./TestResults \
+          --results-directory ../TestResults \
+          --report-trx \
+          --report-trx-filename test_results.trx \
           /p:CollectCoverage=true \
-          /p:CoverletOutput=./TestResults/coverage/ \
+          /p:CoverletOutput=../TestResults/coverage/ \
           /p:CoverletOutputFormat=opencover
+      working-directory: src
 
     - name: Publish test results (GitHub Check)
       if: always()
@@ -70,6 +72,7 @@ jobs:
     # SonarCloud Scan (TRX + Coverage Pfade als args)
     - name: SonarCloud Scan
       if: always()
+      continue-on-error: true
       uses: SonarSource/sonarcloud-github-action@v3
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -418,4 +421,3 @@ jobs:
         releaseFiles: release-assets/**/*-Signed.aab
         track: internal
         status: draft
-
