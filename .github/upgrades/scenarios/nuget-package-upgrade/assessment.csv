@@ -1,0 +1,6 @@
+Issue ID,Description,State,Severity,Story Points,Project Path,Location Kind,Path,Line,Column,Incident ID,Help Link,Assembly Name,Assembly Version,Assembly Public Key,Snippet
+Pkg.0001,Project references an upgraded package,Active,Information,0,Android\Android.csproj,File,Android\Android.csproj,,,Avalonia.Android 12.1.0,,,,,"Avalonia.Android, 12.1.0"
+Pkg.0001,Project references an upgraded package,Active,Information,0,de.openelp.regatta\de.openelp.regatta.csproj,File,de.openelp.regatta\de.openelp.regatta.csproj,,,Avalonia 12.1.0,,,,,"Avalonia, 12.1.0"
+Pkg.0001,Project references an upgraded package,Active,Information,0,de.openelp.regatta\de.openelp.regatta.csproj,File,de.openelp.regatta\de.openelp.regatta.csproj,,,Avalonia.Themes.Fluent 12.1.0,,,,,"Avalonia.Themes.Fluent, 12.1.0"
+Pkg.0001,Project references an upgraded package,Active,Information,0,de.openelp.regatta\de.openelp.regatta.csproj,File,de.openelp.regatta\de.openelp.regatta.csproj,,,Avalonia.Fonts.Inter 12.1.0,,,,,"Avalonia.Fonts.Inter, 12.1.0"
+Pkg.0001,Project references an upgraded package,Active,Information,0,Desktop\Desktop.csproj,File,Desktop\Desktop.csproj,,,Avalonia.Desktop 12.1.0,,,,,"Avalonia.Desktop, 12.1.0"

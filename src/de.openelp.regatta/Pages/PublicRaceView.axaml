@@ -11,6 +11,7 @@
 		<ScrollViewer >
 			<DataGrid ItemsSource="{Binding Races}"
 			   GridLinesVisibility="All"
+				IsReadOnly="True"
 			   BorderThickness="1" BorderBrush="Gray" >
 				<DataGrid.Styles>
 					<Style Selector="DataGrid /template/ScrollBar#PART_VerticalScrollbar">

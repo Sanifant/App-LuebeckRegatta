@@ -110,7 +110,7 @@ public class MainActivity : AvaloniaMainActivity
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Password migration failed: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Password migration failed: {ex.Message}");
             }
 
             // Return the in-memory plaintext directly; the encrypted form is now persisted
@@ -134,7 +134,7 @@ public class MainActivity : AvaloniaMainActivity
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Password decryption failed: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Password decryption failed: {ex.Message}");
             return string.Empty;
         }
     }
@@ -153,7 +153,7 @@ public class MainActivity : AvaloniaMainActivity
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Password encryption failed: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Password encryption failed: {ex.Message}");
         }
     }
 

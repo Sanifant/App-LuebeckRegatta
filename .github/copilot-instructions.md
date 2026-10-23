@@ -38,9 +38,7 @@ Targets Android, iOS, Desktop (Windows/Linux), and Mac using .NET 10.0 and integ
 
 ## Build & Development
 
-### Platform-Specific Builds
-```bash
-# Desktop (Windows/Linux/Mac)
+### Platform-Specific Builds# Desktop (Windows/Linux/Mac)
 dotnet build src/Desktop/Desktop.csproj -c Release
 
 # Android
@@ -48,8 +46,6 @@ dotnet build src/Android/Android.csproj -c Release
 
 # iOS (macOS only)
 dotnet build src/IOS/IOS.csproj -c Release
-```
-
 ### Android Configuration
 - Target framework: `net10.0-android`
 - Minimum Android version: API 21 (Android 5.0)
@@ -74,15 +70,11 @@ dotnet build src/IOS/IOS.csproj -c Release
 - Desktop release assets automatically attached to GitHub releases as ZIP files
 
 ## Key Conventions
-1. **XML Documentation Comments** - Always add /// documentation comments for classes, methods, and public members
-   ```csharp
-   /// <summary>
-   /// Gets all race heats for an event
-   /// </summary>
-   /// <param name="eventId">The event ID</param>
-   public async Task<List<RaceHeatModel>?> GetRaceHeatsAsync(int eventId) { ... }
-   ```
-
+1. **XML Documentation Comments** - Always add /// documentation comments for classes, methods, and public members/// <summary>
+/// Gets all race heats for an event
+/// </summary>
+/// <param name="eventId">The event ID</param>
+public async Task<List<RaceHeatModel>?> GetRaceHeatsAsync(int eventId) { ... }
 2. **Nullable Reference Types** - Enabled project-wide (`<Nullable>enable</Nullable>`)
    - Use `?` suffix for nullable types (e.g., `string?`, `int?`, `List<T>?`)
    - Return null from service methods on errors
@@ -93,21 +85,17 @@ dotnet build src/IOS/IOS.csproj -c Release
 
 4. **German UI text** - App displays in German (e.g., "Lübeck Regatta")
 
-5. **Error handling pattern**:
-   ```csharp
-   try
-   {
-       var response = await _httpClient.GetAsync($"{_baseUrl}/api/endpoint");
-       response.EnsureSuccessStatusCode();
-       return await response.Content.ReadFromJsonAsync<Model>();
-   }
-   catch (Exception ex)
-   {
-       Debug.WriteLine($"Error description: {ex.Message}");
+5. **Error handling pattern**:try
+{
+    var response = await _httpClient.GetAsync($"{_baseUrl}/api/endpoint");
+    response.EnsureSuccessStatusCode();
+    return await response.Content.ReadFromJsonAsync<Model>();
+}
+catch (Exception ex)
+{
+    Debug.WriteLine($"Error description: {ex.Message}");
        return null;
    }
-   ```
-
 6. **No code-behind logic in Views** - Keep Views simple, all logic in ViewModels
 
 7. **Avalonia-specific patterns**:
@@ -119,3 +107,9 @@ dotnet build src/IOS/IOS.csproj -c Release
    - Core library: `de.openelp.regatta` (shared code)
    - Platform heads: `Desktop`, `Android`, `IOS` (reference core project)
    - Tests: `de.openelp.regatta.Tests`
+
+## Modernization Guidelines
+- Keep .NET 10 stable; do not move to .NET 11 Preview.
+- Work on the current main branch.
+- Preserve existing local modifications without committing or stashing them.
+- Add central package version entries for `Tmds.DBus.Protocol` and test package references using current stable versions, in addition to the Avalonia-only updates.

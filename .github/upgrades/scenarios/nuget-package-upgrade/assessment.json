@@ -1,0 +1,316 @@
+{
+  "settings": {
+    "components": {
+      "code": true,
+      "binaries": false
+    },
+    "targetId": ""
+  },
+  "analysisStartTime": "2026-10-23T13:42:22.0984904Z",
+  "analysisEndTime": "2026-10-23T13:42:23.1801545Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 5,
+      "issues": 1,
+      "incidents": 5,
+      "effort": 0
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 0,
+        "Optional": 0,
+        "Potential": 0,
+        "Information": 5
+      },
+      "category": {
+        "Pkg": 5
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "Android\\Android.csproj",
+      "startingProject": true,
+      "issues": 1,
+      "storyPoints": 0,
+      "properties": {
+        "appName": "Android",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net10.0-android"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "isTestProject": false,
+        "numberOfFiles": 2,
+        "numberOfCodeFiles": 2,
+        "linesTotal": 249,
+        "linesOfCode": 249,
+        "totalApiScanned": 0,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "2b91cc36-4986-4ae9-9ae9-9f336b6db39b",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Avalonia.Android\u0027 12.1.0 (included in this upgrade).",
+          "projectPath": "Android\\Android.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Avalonia.Android, 12.1.0",
+              "protected": "Avalonia.Android, 12.1.0"
+            },
+            "kind": "File",
+            "path": "Android\\Android.csproj",
+            "snippet": "Avalonia.Android, 12.1.0",
+            "protectedSnippet": "Avalonia.Android, 12.1.0",
+            "label": "Avalonia.Android 12.1.0",
+            "properties": {
+              "PackageId": "Avalonia.Android",
+              "PackageVersion": "12.1.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "de.openelp.regatta\\de.openelp.regatta.csproj",
+      "startingProject": true,
+      "issues": 1,
+      "storyPoints": 0,
+      "properties": {
+        "appName": "de.openelp.regatta",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net10.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "isTestProject": false,
+        "numberOfFiles": 43,
+        "numberOfCodeFiles": 43,
+        "linesTotal": 2482,
+        "linesOfCode": 2482,
+        "totalApiScanned": 0,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "db046f30-f1eb-47d4-9592-d6532c5b837c",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Avalonia\u0027 12.1.0; proposed upgrade to 12.1.4.",
+          "projectPath": "de.openelp.regatta\\de.openelp.regatta.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Avalonia, 12.1.0",
+              "protected": "Avalonia, 12.1.0"
+            },
+            "kind": "File",
+            "path": "de.openelp.regatta\\de.openelp.regatta.csproj",
+            "snippet": "Avalonia, 12.1.0",
+            "protectedSnippet": "Avalonia, 12.1.0",
+            "label": "Avalonia 12.1.0",
+            "properties": {
+              "PackageId": "Avalonia",
+              "PackageVersion": "12.1.0",
+              "PackageNewVersion": "12.1.4",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "2535b90d-80c3-4162-8d22-07fafa5939cd",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Avalonia.Themes.Fluent\u0027 12.1.0; proposed upgrade to 12.1.4.",
+          "projectPath": "de.openelp.regatta\\de.openelp.regatta.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Avalonia.Themes.Fluent, 12.1.0",
+              "protected": "Avalonia.Themes.Fluent, 12.1.0"
+            },
+            "kind": "File",
+            "path": "de.openelp.regatta\\de.openelp.regatta.csproj",
+            "snippet": "Avalonia.Themes.Fluent, 12.1.0",
+            "protectedSnippet": "Avalonia.Themes.Fluent, 12.1.0",
+            "label": "Avalonia.Themes.Fluent 12.1.0",
+            "properties": {
+              "PackageId": "Avalonia.Themes.Fluent",
+              "PackageVersion": "12.1.0",
+              "PackageNewVersion": "12.1.4",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "e96453a4-7dc1-474b-abba-5b61b1aee0ad",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Avalonia.Fonts.Inter\u0027 12.1.0; proposed upgrade to 12.1.4.",
+          "projectPath": "de.openelp.regatta\\de.openelp.regatta.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Avalonia.Fonts.Inter, 12.1.0",
+              "protected": "Avalonia.Fonts.Inter, 12.1.0"
+            },
+            "kind": "File",
+            "path": "de.openelp.regatta\\de.openelp.regatta.csproj",
+            "snippet": "Avalonia.Fonts.Inter, 12.1.0",
+            "protectedSnippet": "Avalonia.Fonts.Inter, 12.1.0",
+            "label": "Avalonia.Fonts.Inter 12.1.0",
+            "properties": {
+              "PackageId": "Avalonia.Fonts.Inter",
+              "PackageVersion": "12.1.0",
+              "PackageNewVersion": "12.1.4",
+              "PackageReplacements": null
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "de.openelp.regatta.Tests\\de.openelp.regatta.Tests.csproj",
+      "startingProject": true,
+      "issues": 0,
+      "storyPoints": 0,
+      "properties": {
+        "appName": "de.openelp.regatta.Tests",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net10.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "isTestProject": true,
+        "numberOfFiles": 7,
+        "numberOfCodeFiles": 7,
+        "linesTotal": 659,
+        "linesOfCode": 659,
+        "totalApiScanned": 0,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [],
+      "features": []
+    },
+    {
+      "path": "Desktop\\Desktop.csproj",
+      "startingProject": true,
+      "issues": 1,
+      "storyPoints": 0,
+      "properties": {
+        "appName": "Desktop",
+        "projectKind": "WinForms",
+        "frameworks": [
+          "net10.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "isTestProject": false,
+        "numberOfFiles": 1,
+        "numberOfCodeFiles": 1,
+        "linesTotal": 22,
+        "linesOfCode": 22,
+        "totalApiScanned": 0,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "a26bbcfd-0d0e-4b46-9e19-61f86dc8234e",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Avalonia.Desktop\u0027 12.1.0; proposed upgrade to 12.1.4.",
+          "projectPath": "Desktop\\Desktop.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Avalonia.Desktop, 12.1.0",
+              "protected": "Avalonia.Desktop, 12.1.0"
+            },
+            "kind": "File",
+            "path": "Desktop\\Desktop.csproj",
+            "snippet": "Avalonia.Desktop, 12.1.0",
+            "protectedSnippet": "Avalonia.Desktop, 12.1.0",
+            "label": "Avalonia.Desktop 12.1.0",
+            "properties": {
+              "PackageId": "Avalonia.Desktop",
+              "PackageVersion": "12.1.0",
+              "PackageNewVersion": "12.1.4",
+              "PackageReplacements": null
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "IOS\\IOS.csproj",
+      "startingProject": true,
+      "issues": 0,
+      "storyPoints": 0,
+      "properties": {
+        "appName": "IOS",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net10.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "isTestProject": false,
+        "numberOfFiles": 0,
+        "numberOfCodeFiles": 0,
+        "linesTotal": 0,
+        "linesOfCode": 0,
+        "totalApiScanned": 0,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [],
+      "features": []
+    }
+  ],
+  "rules": {
+    "Pkg.0001": {
+      "id": "Pkg.0001",
+      "isFeature": false,
+      "description": "Project references a package included in this upgrade.\n\nThe project references one of the packages being upgraded. This finding records the reference (current and proposed version) so the assessment lists every affected project even when no breaking API changes were detected.",
+      "label": "Project references an upgraded package",
+      "severity": "Information",
+      "effort": 0
+    }
+  }
+}
