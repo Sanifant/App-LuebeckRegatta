@@ -17,7 +17,7 @@ using System.Text;
 namespace de.openelp.luebeckregatta.android;
 
 [Activity(
-    Label = "de.openelp.regatta.Android",
+    Label = "Lübeck Regatta",
     Theme = "@style/MyTheme.NoActionBar",
     Icon = "@drawable/icon",
     MainLauncher = true,
