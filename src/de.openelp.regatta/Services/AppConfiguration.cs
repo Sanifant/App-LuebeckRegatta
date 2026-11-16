@@ -15,6 +15,15 @@ public sealed class AppConfiguration : IAppConfiguration
     private int _selectedEventId = -1;
     private UserDto? _user;
 
+    public AppConfiguration()
+    {
+        this.WebApiBaseUrl = Environment.GetEnvironmentVariable("REGATTA_WEB_API_BASE_URL") ?? _webApiBaseUrl;
+        this.IsDebugMode = Environment.GetEnvironmentVariable("REGATTA_DEBUG_MODE") == "1";
+        this.AppTheme = Environment.GetEnvironmentVariable("REGATTA_APP_THEME") ?? "Light";
+        this.UserName = Environment.GetEnvironmentVariable("REGATTA_USER_NAME")?? "Admin";
+        this.Password = Environment.GetEnvironmentVariable("REGATTA_PASSWORD") ?? "Password";
+    }
+
     /// <summary>
     /// Gets the shared app-wide configuration instance.
     /// </summary>

@@ -27,6 +27,14 @@ public partial class App : Application
     {
         var appConfiguration = AppConfiguration.Current;
 
+#if DEBUG
+        appConfiguration.WebApiBaseUrl = Environment.GetEnvironmentVariable("REGATTA_WEB_API_BASE_URL") ?? appConfiguration.WebApiBaseUrl;
+        appConfiguration.IsDebugMode = Environment.GetEnvironmentVariable("REGATTA_DEBUG_MODE") == "1";
+        appConfiguration.AppTheme = Environment.GetEnvironmentVariable("REGATTA_APP_THEME") ?? appConfiguration.AppTheme;
+        appConfiguration.UserName = Environment.GetEnvironmentVariable("REGATTA_USER_NAME") ?? appConfiguration.UserName;
+        appConfiguration.Password = Environment.GetEnvironmentVariable("REGATTA_PASSWORD") ?? appConfiguration.Password;
+#endif
+
         // For Desktop: load persisted configuration before building services
         FileConfigurationPersistence? persistence = null;
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)

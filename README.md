@@ -1,6 +1,7 @@
 # Lübeck Regatta App
 
 [![Build and Test](https://github.com/Sanifant/App-LuebeckRegatta/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/Sanifant/App-LuebeckRegatta/actions/workflows/build-and-test.yml)
+[![CodeQL](https://github.com/Sanifant/App-LuebeckRegatta/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/Sanifant/App-LuebeckRegatta/actions/workflows/github-code-scanning/codeql)
 
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=Sanifant_App-LuebeckRegatta&token=5774c6625bcf4a4d8923d0f2a8737b5e223eed2d)](https://sonarcloud.io/summary/new_code?id=Sanifant_App-LuebeckRegatta)
 

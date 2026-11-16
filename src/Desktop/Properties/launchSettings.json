@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Desktop": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "REGATTA_USER_NAME": "admin",
+        "REGATTA_PASSWORD": "frg_2021_admin"
+      }
+    }
+  }
+}

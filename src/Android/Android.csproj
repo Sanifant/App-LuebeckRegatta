@@ -27,8 +27,11 @@
 
     <ItemGroup>
         <PackageReference Include="Avalonia.Android"/>
-        <PackageReference Include="Xamarin.AndroidX.Core.Core.Ktx" />
         <PackageReference Include="Xamarin.AndroidX.Core.SplashScreen"/>
+        <!-- Keep the lifecycle bindings aligned with the transitive 2.11 dependencies. -->
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Process" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModelSavedState" />
     </ItemGroup>
 
     <ItemGroup>

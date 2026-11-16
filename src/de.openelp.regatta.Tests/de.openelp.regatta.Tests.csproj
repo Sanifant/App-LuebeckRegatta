@@ -8,7 +8,8 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.NET.Test.Sdk" />
-      <PackageReference Include="xunit.v3" />
+      <!-- Keep dotnet test and CI's VSTest/TRX command compatible with .NET 10. -->
+      <PackageReference Include="xunit.v3.mtp-off" />
       <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
     </ItemGroup>
 
